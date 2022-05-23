@@ -1,24 +1,33 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import AdminRoutes from './Routes';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { CssBaseline } from '@mui/material';
+import { AuthProvider } from './context/AuthProvider';
+import Appbar from './components/Appbar';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 function App() {
+  const theme = createTheme({
+    typography: {
+      fontFamily: ['Ubuntu', 'sans-serif'].join(',')
+    },
+    palette: {
+      mode: "dark"
+    },
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <AuthProvider>
+        <ThemeProvider theme={theme}> 
+          <CssBaseline />
+          <Appbar />
+          <AdminRoutes /> 
+        </ThemeProvider>
+      </AuthProvider>
+    </LocalizationProvider>
   );
 }
 
