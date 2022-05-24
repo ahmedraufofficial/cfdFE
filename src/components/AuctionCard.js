@@ -8,6 +8,7 @@ import moment from 'moment';
 import Timer from './Timer';
 import { useState } from 'react';
 import Button from '@mui/material/Button';
+import { useEffect } from 'react';
 
 const images = require.context('../../public/uploads', true);
 
@@ -19,30 +20,45 @@ const Img = styled('img')({
   });
 
 export default function AuctionCard(props) {  
-    const [auctions, setAuctions] = useState(1)
+    const [auction, setAuction] = useState(props?.data)
 
-    const handleclick = () => {
-
-        var test = auctions + 1;
-        setAuctions(test)
+    const handleclick = async () => {
+      const response = await fetch(`http://localhost:3001/edit/auction/${auction._id}`, {
+                                    method: 'PUT',
+                                    headers: {'Content-Type': 'application/json'},
+                                    body: JSON.stringify({
+                                      Auction_Opening_Price: (parseInt(auction.Auction_Opening_Price) + parseInt(auction.Set_Incremental_Price)).toString()
+                                    })
+                                })
+      const data = await response.json()
+      if (data.status === "200") {
+        setAuction(data.response);
+      } else if (data.status === '500') 
+      {
+        console.log(data.error)
+      }
 
     };
 
-    //console.log(props?.data)
+/*     useEffect(() => {
+      setTimeLeft(calcTimeLeft(end));
+    },[]) */
+
+    console.log(auction.Auction_Opening_Price)
     const linkStyle = {
         color: "white",
         textDecoration: "none",
     }
 
     
-    const startingTime = moment(props?.data?.Auction_Start_Date).format("YYYY-MM-DD")+" "+props?.data?.Auction_Start_Time+":00"
+    const startingTime = moment(auction.Auction_Start_Date).format("YYYY-MM-DD")+" "+auction.Auction_Start_Time+":00"
 
-    const endTime = new Date(startingTime).getTime() + 60000 * 15; 
+    const endTime = new Date(startingTime).getTime() + 60000 * parseInt(auction.Total_Bidding_Duration || 10); 
     const [timeLeft, setEndTime] = Timer(endTime);
   
     const minutes = Math.floor(timeLeft / 60000) % 60;
     const seconds = Math.floor(timeLeft / 1000) % 60;
-    console.log(props?.data)
+
 
 
     return props?.data?
@@ -68,13 +84,13 @@ export default function AuctionCard(props) {
               <Grid item xs container direction="column" spacing={2}>
                 <Grid item xs>
                   <Typography gutterBottom variant="subtitle1" component="div">
-                    {props?.data?.Vehicle_Title}
+                    {auction.Vehicle_Title}
                   </Typography>
                   <Typography variant="body2" gutterBottom>
-                    Opening price: {props?.data?.Auction_Opening_Price}
+                    Opening price: {auction.Auction_Opening_Price}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Description: {props?.data?.Product_Description}
+                    Description: {auction.Product_Description}
                   </Typography>
                 </Grid>
                 <Grid item>
@@ -83,7 +99,7 @@ export default function AuctionCard(props) {
               </Grid>
               <Grid item>
                 <Typography variant="subtitle1" component="div">
-                  {moment(props?.data?.Auction_Start_Date).format("LL")}
+                  {moment(auction.Auction_Start_Date).format("LL")}
                 </Typography>
               </Grid>
             </Grid>
