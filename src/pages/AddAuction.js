@@ -143,7 +143,7 @@ function AddAuction(){
                         <FormControl style={fieldStyle} margin="normal">
                             <Field name="Stop_Auto_Bidding_Condition" component={CustomizedSelectForFormik}>
                                 <MenuItem key="SABC1" value="Never">Never</MenuItem>
-                                <MenuItem key="SABC2" value="Reserve_Price">Reserved Price</MenuItem>
+                                <MenuItem key="SABC2" value="Set_Reserve_Price">Reserved Price</MenuItem>
                                 <MenuItem key="SABC3" value="First_Best_Offer">First Best Offer</MenuItem>
                                 <MenuItem key="SABC4" value="Second_Best_Offer">Second Best Offer</MenuItem>
                                 <MenuItem key="SABC5" value="Third_Best_Offer">Third Best Offer</MenuItem>

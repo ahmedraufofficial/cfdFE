@@ -21,30 +21,43 @@ const Img = styled('img')({
 
 export default function AuctionCard(props) {  
     const [auction, setAuction] = useState(props?.data)
+    const [autoBidding, setAutoBidding] = useState(JSON.parse(props?.data?.Allow_Auto_Bidding))
+    const [stopAutoBidding, setStopAutoBidding] = useState(props?.data?.Stop_Auto_Bidding_Condition)
+    const [intervalId, setIntervalId] = useState(0);
 
-    const handleclick = async () => {
+    const handleBid = async () => {
+      const openingPrice = parseInt(auction.Auction_Opening_Price);
+      const incrementalPrice = parseInt(auction.Set_Incremental_Price);
       const response = await fetch(`http://localhost:3001/edit/auction/${auction._id}`, {
                                     method: 'PUT',
                                     headers: {'Content-Type': 'application/json'},
                                     body: JSON.stringify({
-                                      Auction_Opening_Price: (parseInt(auction.Auction_Opening_Price) + parseInt(auction.Set_Incremental_Price)).toString()
+                                      Auction_Opening_Price: ( openingPrice + incrementalPrice ).toString(),
+                                      Allow_Auto_Bidding: (autoBidding).toString()
                                     })
-                                })
-      const data = await response.json()
+                                });
+      const data = await response.json();
       if (data.status === "200") {
         setAuction(data.response);
       } else if (data.status === '500') 
       {
         console.log(data.error)
       }
-
     };
 
-/*     useEffect(() => {
-      setTimeLeft(calcTimeLeft(end));
-    },[]) */
+    //console.log(auction["Set_Reserve_Price"])
 
-    console.log(auction.Auction_Opening_Price)
+    useEffect(() => {
+      if (parseInt(auction?.Auction_Opening_Price) < parseInt(auction[auction?.Stop_Auto_Bidding_Condition]) 
+      && autoBidding == true) {
+        setTimeout(handleBid, 10000);
+      } else {
+        setAutoBidding(false)
+      }
+
+    }, [auction]);
+
+    //console.log(auction)
     const linkStyle = {
         color: "white",
         textDecoration: "none",
@@ -94,7 +107,7 @@ export default function AuctionCard(props) {
                   </Typography>
                 </Grid>
                 <Grid item>
-                    <Button onClick={() => {handleclick()}}>Bid</Button>
+                    <Button onClick={() => {handleBid()}}>Bid</Button>
                 </Grid>
               </Grid>
               <Grid item>
