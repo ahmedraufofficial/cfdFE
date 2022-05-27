@@ -11,7 +11,8 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 function App() {
   const theme = createTheme({
     typography: {
-      fontFamily: ['Ubuntu', 'sans-serif'].join(',')
+      fontFamily: ['Ubuntu', 'sans-serif'].join(','),
+      h4: {fontSize: '1.2rem'}
     },
     palette: {
       mode: "dark"
