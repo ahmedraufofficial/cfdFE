@@ -1,22 +1,24 @@
-import * as React from 'react';
+import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
+import DirectionsCarFilledSharpIcon from '@mui/icons-material/DirectionsCarFilledSharp';
+import MenuIcon from '@mui/icons-material/Menu';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
+import Container from '@mui/material/Container';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import DirectionsCarFilledSharpIcon from '@mui/icons-material/DirectionsCarFilledSharp';
-import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
+import Toolbar from '@mui/material/Toolbar';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
+import * as React from 'react';
 import { Link } from "react-router-dom";
 
 const pages =  localStorage.getItem('user') ? [
   {name:'Auctions', url:'/auctions'},
+  {name:'Negotiations', url:'/negotiations'},
   {name:'Vehicles', url:'/vehicles'},
+  {name:'Invoices', url:'/invoices'},
   {name:'Add Vehicle', url:'/vehicle/add'},
   {name:'Add Auction', url:'/auction/add'},
   {name:'Add Images', url:'/images/add'},] : [];

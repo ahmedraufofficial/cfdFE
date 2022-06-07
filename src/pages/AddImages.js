@@ -1,14 +1,14 @@
-import { Field, Formik, Form } from 'formik'
-import React, {useEffect, useState} from 'react'
-import { Grid, Button, Paper, MenuItem, Select, FormControl, FormLabel } from '@mui/material';
+import { Button, FormControl, FormLabel, Grid, MenuItem, Paper, Select } from '@mui/material';
+import { Field, Form, Formik } from 'formik';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { paperStyle, fieldStyle, gridStyle } from '../styles';
+import { fieldStyle, gridStyle, paperStyle } from '../styles';
 
 function AddImages() {
     const [vehicles, setVehicles] = useState([])
     const navigate = useNavigate();
     const fetchData = () => {
-        fetch('http://localhost:3001/vehicles')
+        fetch(`${process.env.REACT_APP_API}/vehicles`)
           .then(response => {
             return response.json()
           })
@@ -52,7 +52,7 @@ function AddImages() {
                         for(let i=0; i < files.files.length; i++) {
                             formData.append("files", files.files[i]);
                         }
-                        fetch("http://localhost:3001/upload_images", {
+                        fetch(`${process.env.REACT_APP_API}/upload_images`, {
                             method: 'POST',
                             body: formData,
                             headers: {}

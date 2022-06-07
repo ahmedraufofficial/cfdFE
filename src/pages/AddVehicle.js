@@ -1,12 +1,12 @@
-import { Field, Formik, Form, useField } from 'formik'
-import React, {useEffect, useState} from 'react'
-import { Grid, Button, Paper, MenuItem, Select, FormControl, Radio, FormControlLabel, Checkbox, Stepper, Step, StepLabel } from '@mui/material';
-import * as Yup from 'yup'; 
+import { Button, Checkbox, FormControl, FormControlLabel, Grid, MenuItem, Paper, Radio, Select, Step, StepLabel, Stepper } from '@mui/material';
+import { Field, Form, Formik, useField } from 'formik';
 import { TextField } from 'formik-material-ui';
-import { useNavigate } from "react-router-dom";
 import { DatePicker } from 'formik-mui-lab';
 import moment from "moment";
-import { paperStyle, fieldStyle, gridStyle, checkFields, Menu } from '../styles';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import * as Yup from 'yup';
+import { checkFields, fieldStyle, gridStyle, Menu, paperStyle } from '../styles';
 
 function AddVehicle() {
     const navigate = useNavigate();
@@ -112,7 +112,7 @@ function AddVehicle() {
                     onSubmit={(values, { resetForm }) => {                    
                         try {
                             async function Add(x) {
-                                const response = await fetch('http://localhost:3001/add/vehicle', {
+                                const response = await fetch(`${process.env.REACT_APP_API}/add/vehicle`, {
                                     method: 'POST',
                                     headers: {'Content-Type': 'application/json'},
                                     body: JSON.stringify({

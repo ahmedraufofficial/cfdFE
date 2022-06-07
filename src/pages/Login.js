@@ -1,11 +1,11 @@
-import { React } from "react";
-import { Button, Grid, Paper, Avatar, Typography } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
-import { Formik, Form, Field } from 'formik';
+import { Avatar, Button, Grid, Paper, Typography } from '@mui/material';
+import { Field, Form, Formik } from 'formik';
 import { TextField } from "formik-material-ui";
+import { React } from "react";
+import { Navigate, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useAuth } from "../context/AuthProvider";
-import { useNavigate, Navigate } from 'react-router-dom';
 import { paperStyle } from '../styles';
 
 const Login = () => {
@@ -54,7 +54,7 @@ const Login = () => {
                     onSubmit={(e, { resetForm }) => {
                         try {
                             async function SignIn() {
-                                const response = await fetch('http://localhost:3001/api'+LOGIN_URL, {
+                                const response = await fetch(`${process.env.REACT_APP_API}`+LOGIN_URL, {
                                     method: 'POST',
                                     headers: {'Content-Type': 'application/json'},
                                     body: JSON.stringify({

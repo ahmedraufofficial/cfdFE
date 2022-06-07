@@ -1,34 +1,15 @@
-import { React, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Grid, Stack } from '@mui/material';
-import { paperStyle } from '../styles';
+import { React } from 'react';
 import AuctionCard from '../components/AuctionCard';
+import { paperStyle } from '../styles';
 
-function Auctions() {
-    const navigate = useNavigate();
-    const [auctions, setAuctions] = useState([])
-
-    const fetchData = () => {
-        fetch('http://localhost:3001/auctions')
-          .then(response => {
-            return response.json()
-          })
-          .then(data => {
-            setAuctions(data.data)
-          })
-      }
-
-    useEffect(() => {
-        fetchData()
-    }, [])
-
-
+function Auctions(props) {
+    const auctions = props.auctions 
     return (
         <Grid style={paperStyle}>
         <Grid>
             <h2>Auctions</h2>
         </Grid>
-        
             {auctions.length > 0 && (
                 auctions.map(auction => 
                     <Stack mt={3}>

@@ -1,6 +1,6 @@
+import { Grid } from '@mui/material';
 import { React, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid } from '@mui/material';
 import VehicleCard from '../components/VehicleCard';
 import { paperStyle } from '../styles';
 
@@ -9,7 +9,7 @@ export default function Vehicles() {
     const [vehicles, setVehicles] = useState([])
 
     const fetchData = () => {
-        fetch('http://localhost:3001/vehicles')
+        fetch(`${process.env.REACT_APP_API}/vehicles`)
           .then(response => {
             return response.json()
           })

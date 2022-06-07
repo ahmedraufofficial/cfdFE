@@ -1,13 +1,12 @@
-import { Field, Formik, Form, useField } from 'formik'
-import React, {useEffect, useState} from 'react'
-import { Grid, Button, Paper, MenuItem, Select, FormControl, Radio, FormControlLabel, Checkbox, Stepper, Step, StepLabel } from '@mui/material';
-import * as Yup from 'yup'; 
-import { TextField } from 'formik-material-ui';
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom"
-import CircularProgress from '@mui/material/CircularProgress';
+import { Button, Checkbox, FormControl, FormControlLabel, Grid, MenuItem, Paper, Radio, Select, Step, StepLabel, Stepper } from '@mui/material';
 import Box from '@mui/material/Box';
-import { paperStyle, fieldStyle, gridStyle, checkFields, Menu } from '../styles';
+import CircularProgress from '@mui/material/CircularProgress';
+import { Field, Form, Formik, useField } from 'formik';
+import { TextField } from 'formik-material-ui';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from "react-router-dom";
+import * as Yup from 'yup';
+import { checkFields, fieldStyle, gridStyle, Menu, paperStyle } from '../styles';
 
 function AddVehicle() {
     const location = useLocation();
@@ -26,7 +25,7 @@ function AddVehicle() {
       }
 
     const fetchEditData = (id) => {
-        fetch(`http://localhost:3001/vehicle/${id}`)
+        fetch(`${process.env.REACT_APP_API}/vehicle/${id}`)
           .then(response => {
             return response.json()
           })
@@ -123,7 +122,7 @@ function AddVehicle() {
                     onSubmit={(values) => {                  
                         try {
                             async function Edit() {
-                                const response = await fetch(`http://localhost:3001/edit/vehicle/${edit._id}`, {
+                                const response = await fetch(`${process.env.REACT_APP_API}/edit/vehicle/${edit._id}`, {
                                     method: 'PUT',
                                     headers: {'Content-Type': 'application/json'},
                                     body: JSON.stringify({

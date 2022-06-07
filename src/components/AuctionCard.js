@@ -1,20 +1,22 @@
-import * as React from 'react';
-import { styled } from '@mui/material/styles';
+import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
+import { Divider } from '@mui/material';
+import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
+import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import { Field, Formik, Form, useField } from 'formik'
+import { Field, Form, Formik } from 'formik';
 import { TextField } from 'formik-material-ui';
 import moment from 'moment';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import * as Yup from 'yup';
+import AuctionTable from './AuctionTable';
 import Timer from './Timer';
-import { useState } from 'react';
-import Button from '@mui/material/Button';
-import { useEffect } from 'react';
-import Stack from '@mui/material/Stack';
-import { Divider } from '@mui/material';
-import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
-import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
-import * as Yup from 'yup'; 
 
 const images = require.context('../../public/uploads', true);
 
@@ -30,6 +32,8 @@ export default function AuctionCard(props) {
     const [autoBidding, setAutoBidding] = useState(JSON.parse(props?.data?.Allow_Auto_Bidding))
     const [intervalId, setIntervalId] = useState(0);
     const [status, setStatus] = useState(1);
+    const [showTable, setShowTable] = useState(0);
+
     const validationSchema = Yup.object({
       Current_Bid: Yup
         .string()
@@ -47,18 +51,19 @@ export default function AuctionCard(props) {
     });
 
     const handleBid = async (bid, username) => {
-      const currentBid = parseInt(auction.Current_Bid);
+      const currentBid = parseInt(auction?.Current_Bid);
       const incrementalBid = bid;
-      const bidDetails = {user: username, bid: ( currentBid + incrementalBid ).toString(), time: moment().format("HH:mm:ss"), date: moment().format("YYYY-MM-DD")}
-      const duration = (JSON.parse(auction.Allow_Auction_Sniping) && minutes < 1) ? parseInt(auction.Total_Bidding_Duration) + parseInt(auction.Incremental_Time) : parseInt(auction.Total_Bidding_Duration);
-      const response = await fetch(`http://localhost:3001/edit/auction/${auction._id}`, {
+      const bidDetails = {user: username, type: "Auction", bid: ( currentBid + incrementalBid ).toString(), time: moment().format("HH:mm:ss"), date: moment().format("YYYY-MM-DD")}
+      //const duration = (JSON.parse(auction.Allow_Auction_Sniping) && minutes < 1) ? parseInt(auction.Total_Bidding_Duration) + parseInt(auction.Incremental_Time) : parseInt(auction.Total_Bidding_Duration);
+      const newBid = auction?.Bids;
+      newBid.push(bidDetails)
+      const response = await fetch(`${process.env.REACT_APP_API}/edit/auction/${auction._id}`, {
                                     method: 'PUT',
                                     headers: {'Content-Type': 'application/json'},
                                     body: JSON.stringify({
                                       Current_Bid: ( currentBid + incrementalBid ).toString(),
                                       Allow_Auto_Bidding: (autoBidding).toString(),
-                                      Total_Bidding_Duration: duration.toString(),
-                                      Bids: bidDetails
+                                      Bids: newBid
                                     })
                                 });
       const data = await response.json();
@@ -66,48 +71,53 @@ export default function AuctionCard(props) {
         if (JSON.parse(data?.response?.Allow_Auction_Sniping))
         {
           let newStartingTime = moment(data?.response?.Auction_Start_Date).format("YYYY-MM-DD")+" "+data?.response?.Auction_Start_Time+":00"
-          let newEndTime = new Date(newStartingTime).getTime() + 60000 * parseInt(data?.response.Total_Bidding_Duration || 10); 
+          let newEndTime = new Date(newStartingTime).getTime() + 60000 * (parseInt(data?.response.Total_Bidding_Duration || 10) + parseInt(auction?.Incremental_Time)); 
           setEndTime(newEndTime);
         }
         setAuction(data.response);
-      } else if (data.status === '500') 
-      {
+      } else if (data.status === '500') {
         console.log(data.error)
       }
     };
 
-
+    const getAuction = async () => {
+      fetch(`${process.env.REACT_APP_API}/auction/${props?.data?._id}`)
+        .then(response => {
+          return response.json()
+        })
+        .then(data => {
+          setAuction(data.response)
+        })
+    }
 
     useEffect(() => {
-      if (parseInt(auction?.Current_Bid) < parseInt(auction[auction?.Stop_Auto_Bidding_Condition]||"100000000") 
-      && autoBidding == true) {
+/*       if (parseInt(auction?.Current_Bid) < parseInt(auction[auction?.Stop_Auto_Bidding_Condition]||"100000000") 
+      && autoBidding === true) {
         setTimeout(function(){handleBid(parseInt(props?.data?.Set_Incremental_Price), "auto");}, 10000);
       } else {
         setAutoBidding(false);
-      }
+      } */
+     
       
-      const newIntervalId = setInterval(() => {
-        if (new Date(moment(auction?.Auction_Start_Date).format("YYYY-MM-DD")+" "+auction?.Auction_Start_Time+":00").getTime() + 60000 * parseInt(auction.Total_Bidding_Duration) <= new Date().getTime()){
-          clearInterval(intervalId);
-          setIntervalId(0);
-          setStatus(0);
-          return;
-        };
-        console.log("Test");
-      }, 5000);
-      setIntervalId(newIntervalId);
+/*       
+      if (new Date(moment(auction?.Auction_Start_Date).format("YYYY-MM-DD")+" "+auction?.Auction_Start_Time+":00").getTime() + 60000 * parseInt(auction.Total_Bidding_Duration) <= new Date().getTime()){
+      
+        setStatus(0); 
+        return;
+      };
+ */
+      setTimeout(getAuction, 10000);
+
     }, [auction]);
 
-    const linkStyle = {
-        color: "white",
-        textDecoration: "none",
+    const iconStyle = {
+      cursor: "pointer"
     }
 
-    
     const startingTime = moment(auction?.Auction_Start_Date).format("YYYY-MM-DD")+" "+auction?.Auction_Start_Time+":00"
 
     const endTime = new Date(startingTime).getTime() + 60000 * parseInt(auction.Total_Bidding_Duration || 10); 
-    const [timeLeft, setEndTime] = Timer(endTime);
+    const [timeLeft, setEndTime] = Timer(endTime, auction);
   
     const minutes = Math.floor(timeLeft / 60000) % 60;
     const seconds = Math.floor(timeLeft / 1000) % 60;
@@ -125,25 +135,25 @@ export default function AuctionCard(props) {
           }}
         >
           <Grid container spacing={2}>
-            { status ? 
-              <Grid xs={12} lg={2} md={2}>
-                <Stack mt={2} direction="row" justifyContent="center">
-                  <Typography variant="h4">Remaining Time</Typography>
-                </Stack>
-                <Stack mt={2} direction="row" justifyContent="center">
-                  <AccessTimeFilledIcon />
-                  <Typography ml={1} variant="h4">{`${minutes}:${seconds}`}</Typography>
-                </Stack>
-              </Grid> : 
-              <Grid xs={12} lg={2} md={2}>
-                <Stack mt={2} direction="row" justifyContent="center">
+            { parseInt(minutes) === 0 && parseInt(seconds) === 0 ? 
+                <Grid item xs={12} lg={2} md={2}>
+                <Stack direction="row" justifyContent="center">
                   <Typography variant="h4" color="red">Auction Completed</Typography>
                 </Stack>
                 <Stack mt={2} direction="row" justifyContent="center">
                   <DoneOutlineIcon />
                 </Stack>
               </Grid>
-            }
+                :        
+              <Grid item xs={12} lg={2} md={2}>
+              <Stack direction="row" justifyContent="center">
+                <Typography variant="h4">Remaining Time</Typography>
+              </Stack>
+              <Stack mt={2} direction="row" justifyContent="center">
+                <AccessTimeFilledIcon />
+                <Typography ml={1} variant="h4">{`${minutes}:${seconds}`}</Typography>
+              </Stack>
+            </Grid> }
             <Grid item xs={12} sm container>
               <Grid item xs container direction="column" spacing={2}>
                 <Grid item xs>
@@ -184,7 +194,7 @@ export default function AuctionCard(props) {
                         handleBid(parseInt(values?.Current_Bid), localStorage.getItem('user'));
                         resetForm();
                       }}>
-                      { status ?   
+                      { parseInt(minutes) === 0 && parseInt(seconds) === 0 ? <></> :
                       <Form>
                         <Grid>
                           <Field 
@@ -198,17 +208,32 @@ export default function AuctionCard(props) {
                         <Grid>
                           <Button margin="normal" variant="contained" color="primary" type="submit">Submit</Button>
                         </Grid>
-                      </Form> : <></>}
+                      </Form>}
                     </Formik>
                 </Grid>
               </Grid>
               <Grid item>
                 <Typography variant="subtitle1" component="div">
-                  {moment(auction.Auction_Start_Date).format("LL")}
+                  {moment(auction?.Auction_Start_Date).format("LL")}
                 </Typography>
               </Grid>
             </Grid>
           </Grid>
+          
+          {!showTable ? 
+          <Stack direction="row" justifyContent="center">
+            <ArrowDropDownIcon style={iconStyle} onClick={() => { setShowTable(1) }} />
+          </Stack> : <></>}
+
+          {showTable ? 
+          <>
+            <Stack mb={2} direction="row" justifyContent="center">
+              <ArrowDropUpIcon style={iconStyle} onClick={() => { setShowTable(0) }} />
+            </Stack>
+            <AuctionTable rows={auction?.Bids}/>
+          </> : 
+          <></>}
+         
         </Paper>
       ) :
     (<></>)

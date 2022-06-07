@@ -2,6 +2,7 @@
   "name": "admin",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://admin.carologyauctions.net",
   "dependencies": {
     "@csstools/normalize.css": "github:csstools/normalize.css",
     "@date-io/date-fns": "^2.14.0",

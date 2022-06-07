@@ -1,14 +1,13 @@
-import { Field, Formik, Form, useField } from 'formik'
-import React, {useEffect, useState} from 'react'
-import { Grid, Button, Paper, MenuItem, Select, FormControl, Radio, FormControlLabel, FormLabel } from '@mui/material';
-import * as Yup from 'yup'; 
-import { TextField } from 'formik-material-ui';
-import { useNavigate } from "react-router-dom";
-import CircularProgress from '@mui/material/CircularProgress';
+import { Button, FormControl, FormControlLabel, FormLabel, Grid, MenuItem, Paper, Radio, Select } from '@mui/material';
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import { Field, Form, Formik, useField } from 'formik';
+import { TextField } from 'formik-material-ui';
 import { DatePicker, DesktopTimePicker } from 'formik-mui-lab';
-import { paperStyle, fieldStyle, gridStyle } from '../styles';
 import moment from "moment";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import { fieldStyle, gridStyle, paperStyle } from '../styles';
 
 function AddAuction(){
     const navigate = useNavigate();
@@ -16,7 +15,7 @@ function AddAuction(){
     const [vehicles, setVehicles] = useState([])
 
     const fetchData = () => {
-        fetch('http://localhost:3001/vehicles')
+        fetch(`${process.env.REACT_APP_API}/vehicles`)
           .then(response => {
             return response.json()
           })
@@ -77,7 +76,7 @@ function AddAuction(){
                     onSubmit={(values, { resetForm }) => {
                         try {
                             async function Add(x) {
-                                const response = await fetch('http://localhost:3001/add/auction', {
+                                const response = await fetch(`${process.env.REACT_APP_API}/add/auction`, {
                                     method: 'POST',
                                     headers: {'Content-Type': 'application/json'},
                                     body: JSON.stringify({
