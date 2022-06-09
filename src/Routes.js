@@ -23,7 +23,13 @@ const AdminRoutes = () => {
           return response.json()
         })
         .then(data => {
+          console.log(data.data)
           setNegotiations(data.data)
+          var count = 0
+          data.data.map((item)=>(
+            item.Buy_Now_Price ? count = count + 1 : null
+          ))
+          localStorage.setItem("negotiationsCount", count)
         })
     }
     

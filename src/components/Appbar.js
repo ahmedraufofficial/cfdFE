@@ -132,7 +132,9 @@ const Appbar = () => {
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                <Link style={linkStyle} underline="none" to={page.url}><Typography textAlign="center">{page.name}</Typography></Link>
+                <Link style={linkStyle} underline="none" to={page.url}><Typography textAlign="center">{page.name}</Typography>
+                  {page.name == "Negotiations" ? parseInt(localStorage.getItem("negotiationsCount")) > 0 ? <Box sx={{background: 'red', width: "2em", position: "absolute", marginLeft: "3em"}}>{localStorage.getItem("negotiationsCount")}</Box>: null : null}
+                </Link>
               </Button>
             ))}
           </Box>

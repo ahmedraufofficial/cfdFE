@@ -9,6 +9,42 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { fieldStyle, gridStyle, paperStyle } from '../styles';
 
+const MyRadio = ({ label, ...props }) => {
+    const [field] = useField(props);
+    return <FormControlLabel {...field} control={<Radio />} label={label} />;
+};
+
+const CustomField = (name) => {
+    return  <Grid><Field key={name.name} style={fieldStyle} margin="normal" label={name.name.replaceAll("_"," ")} name={name.name} component={TextField}></Field></Grid>
+}
+
+const CustomRadioField = (name) => {
+    return  (<Grid style={gridStyle}>
+                <Grid>{name.name.replaceAll("_"," ")}</Grid>
+                <Grid > 
+                    <MyRadio key={`${name.name}True`} name={`${name.name}`} type="radio" value={"true"} label={"Yes"} />
+                    <MyRadio key={`${name.name}False`} name={`${name.name}`} type="radio" value={"false"} label={"No"} />
+                </Grid>
+            </Grid>)
+}
+
+const CustomizedSelectForFormik = ({ children, form, field }) => {
+    const { name, value } = field;
+    const { setFieldValue } = form;
+  
+    return (
+      <Select
+        name={name}
+        value={value}
+        onChange={e => {
+          setFieldValue(name, e.target.value);
+        }}
+      >
+        {children}
+      </Select>
+    );
+};
+
 function AddAuction(){
     const navigate = useNavigate();
 
@@ -27,42 +63,6 @@ function AddAuction(){
     useEffect(() => {
         fetchData()
     }, [])
-
-    const MyRadio = ({ label, ...props }) => {
-        const [field] = useField(props);
-        return <FormControlLabel {...field} control={<Radio />} label={label} />;
-    };
-
-    const CustomField = (name) => {
-        return  <Grid><Field key={name.name} style={fieldStyle} margin="normal" label={name.name.replaceAll("_"," ")} name={name.name} component={TextField}></Field></Grid>
-    }
-
-    const CustomRadioField = (name) => {
-        return  (<Grid style={gridStyle}>
-                    <Grid>{name.name.replaceAll("_"," ")}</Grid>
-                    <Grid > 
-                        <MyRadio key={`${name.name}True`} name={`${name.name}`} type="radio" value={"true"} label={"Yes"} />
-                        <MyRadio key={`${name.name}False`} name={`${name.name}`} type="radio" value={"false"} label={"No"} />
-                    </Grid>
-                </Grid>)
-    }
-
-    const CustomizedSelectForFormik = ({ children, form, field }) => {
-        const { name, value } = field;
-        const { setFieldValue } = form;
-      
-        return (
-          <Select
-            name={name}
-            value={value}
-            onChange={e => {
-              setFieldValue(name, e.target.value);
-            }}
-          >
-            {children}
-          </Select>
-        );
-    };
 
     return (
         (vehicles.length > 0 ? 

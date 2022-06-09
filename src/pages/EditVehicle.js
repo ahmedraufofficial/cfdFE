@@ -8,6 +8,78 @@ import { useLocation, useNavigate } from "react-router-dom";
 import * as Yup from 'yup';
 import { checkFields, fieldStyle, gridStyle, Menu, paperStyle } from '../styles';
 
+const CustomizedSelectForFormik = ({ children, form, field }) => {
+    const { name, value } = field;
+    const { setFieldValue } = form;
+    
+    return (
+    <Select
+        name={name}
+        value={value}
+        onChange={e => {
+        setFieldValue(name, e.target.value);
+        }}
+    >
+        {children}
+    </Select>
+    );
+};
+
+const CustomField = (name) => {
+    return  <Grid><Field key={name.name} style={fieldStyle} margin="normal" label={name.name.replaceAll("_"," ")} name={name.name} component={TextField}></Field></Grid>
+}
+
+const CustomSubField = (name) => {
+    return  <Grid><Field key={`${name.group}.${name.name}`} style={fieldStyle} margin="normal" label={name.name.replaceAll("_"," ").split(".")[0]} name={`${name.group}.${name.name}`} component={TextField}></Field></Grid>
+}
+
+const CustomRadioVariableField = (name) => {
+    return  <Grid style={gridStyle}>
+                <Grid>{name.name.replaceAll("_"," ")}</Grid>
+                <Grid>
+                    {name.label.map((value, index) => <MyRadio key={index} name={`${name.group}.${name.name}.Value`} type="radio" value={value} label={value} />)}
+                </Grid>
+                <Grid>
+                    <Field key={`${name.group}.${name.name}`} style={fieldStyle} margin="normal" label="Custom Field" name={`${name.group}.${name.name}.Comment`} component={TextField}></Field>
+                </Grid>
+            </Grid>
+}
+
+const CustomCheckboxField = (name) => {
+    return  <Grid style={gridStyle}>
+                <Grid>{name.name.replaceAll("_"," ")}</Grid>
+                <Grid > 
+                    {name.label.map((value, index) => <div style={checkFields}><Field  key={index} margin="normal" name={`${name.group}.${name.name}.Value`}  type="checkbox" value={value} as={Checkbox} />{value}</div>)}
+                </Grid>
+                <Grid>
+                    <Field key={`${name.group}.${name.name}`} style={fieldStyle} margin="normal" label="Custom Field" name={`${name.group}.${name.name}.Comment`} component={TextField}></Field>
+                </Grid>
+            </Grid>
+}
+
+const CustomRadioCheckboxField = (name) => {
+    return  <Grid style={gridStyle}>
+                <Grid>{name.name.replaceAll("_"," ")}</Grid>
+                <Grid>
+                    {name.condition.map((value, index) => <MyRadio key={index} name={`${name.group}.${name.name}.Condition`} type="radio" value={value} label={value} />)}
+                </Grid>
+                <Grid > 
+                    {name.label.map((value, index) => <div style={checkFields}><Field key={index} name={`${name.group}.${name.name}.Value`}  type="checkbox" value={value} as={Checkbox} />{value}</div>)}
+                </Grid>
+                <Grid>
+                    <Field key={`${name.group}.${name.name}`} style={fieldStyle} margin="normal" label="Custom Field" name={`${name.group}.${name.name}.Comment`} component={TextField}></Field>
+                </Grid>
+            </Grid>
+
+}
+
+const MyRadio = ({ label, ...props }) => {
+    const [field] = useField(props);
+    return <FormControlLabel {...field} control={<Radio />} label={label} />;
+};
+
+const bodyVariable = ["Original Paint", "Sticker or Foil", "Repainted", "Dented and Painted", "Faded", "Scratches", "Dents", "Rust", "Hailed"]
+
 function AddVehicle() {
     const location = useLocation();
     const navigate = useNavigate();
@@ -41,77 +113,7 @@ function AddVehicle() {
         fetchData()
     }, [])
 
-    const CustomizedSelectForFormik = ({ children, form, field }) => {
-        const { name, value } = field;
-        const { setFieldValue } = form;
-        
-        return (
-        <Select
-            name={name}
-            value={value}
-            onChange={e => {
-            setFieldValue(name, e.target.value);
-            }}
-        >
-            {children}
-        </Select>
-        );
-    };
-
-    const CustomField = (name) => {
-        return  <Grid><Field key={name.name} style={fieldStyle} margin="normal" label={name.name.replaceAll("_"," ")} name={name.name} component={TextField}></Field></Grid>
-    }
-
-    const CustomSubField = (name) => {
-        return  <Grid><Field key={`${name.group}.${name.name}`} style={fieldStyle} margin="normal" label={name.name.replaceAll("_"," ").split(".")[0]} name={`${name.group}.${name.name}`} component={TextField}></Field></Grid>
-    }
-
-    const CustomRadioVariableField = (name) => {
-        return  <Grid style={gridStyle}>
-                    <Grid>{name.name.replaceAll("_"," ")}</Grid>
-                    <Grid>
-                        {name.label.map((value, index) => <MyRadio key={index} name={`${name.group}.${name.name}.Value`} type="radio" value={value} label={value} />)}
-                    </Grid>
-                    <Grid>
-                        <Field key={`${name.group}.${name.name}`} style={fieldStyle} margin="normal" label="Custom Field" name={`${name.group}.${name.name}.Comment`} component={TextField}></Field>
-                    </Grid>
-                </Grid>
-    }
-
-    const CustomCheckboxField = (name) => {
-        return  <Grid style={gridStyle}>
-                    <Grid>{name.name.replaceAll("_"," ")}</Grid>
-                    <Grid > 
-                        {name.label.map((value, index) => <div style={checkFields}><Field  key={index} margin="normal" name={`${name.group}.${name.name}.Value`}  type="checkbox" value={value} as={Checkbox} />{value}</div>)}
-                    </Grid>
-                    <Grid>
-                        <Field key={`${name.group}.${name.name}`} style={fieldStyle} margin="normal" label="Custom Field" name={`${name.group}.${name.name}.Comment`} component={TextField}></Field>
-                    </Grid>
-                </Grid>
-    }
-
-    const CustomRadioCheckboxField = (name) => {
-        return  <Grid style={gridStyle}>
-                    <Grid>{name.name.replaceAll("_"," ")}</Grid>
-                    <Grid>
-                        {name.condition.map((value, index) => <MyRadio key={index} name={`${name.group}.${name.name}.Condition`} type="radio" value={value} label={value} />)}
-                    </Grid>
-                    <Grid > 
-                        {name.label.map((value, index) => <div style={checkFields}><Field key={index} name={`${name.group}.${name.name}.Value`}  type="checkbox" value={value} as={Checkbox} />{value}</div>)}
-                    </Grid>
-                    <Grid>
-                        <Field key={`${name.group}.${name.name}`} style={fieldStyle} margin="normal" label="Custom Field" name={`${name.group}.${name.name}.Comment`} component={TextField}></Field>
-                    </Grid>
-                </Grid>
     
-    }
-
-    const MyRadio = ({ label, ...props }) => {
-        const [field] = useField(props);
-        return <FormControlLabel {...field} control={<Radio />} label={label} />;
-    };
-
-    const bodyVariable = ["Original Paint", "Sticker or Foil", "Repainted", "Dented and Painted", "Faded", "Scratches", "Dents", "Rust", "Hailed"]
 
     return (
         ( edit ? 

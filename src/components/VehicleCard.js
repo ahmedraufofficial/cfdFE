@@ -16,7 +16,7 @@ export default function VehicleCard(props) {
   console.log(props?.data)
   return props?.data ?
    (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card sx={{ width: "17em" }}>
       <CardMedia
         component="img"
         height="200px"

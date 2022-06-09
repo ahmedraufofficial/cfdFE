@@ -24,7 +24,7 @@ const Login = () => {
     });
     
     const auth = useAuth();
-    const LOGIN_URL = '/auth';
+    const LOGIN_URL = '/api/auth';
     const navigate = useNavigate()
     const recursiveStorage = () => {
         if (localStorage.getItem('user')) {

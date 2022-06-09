@@ -56,7 +56,7 @@ export default function NegotiationCard(props) {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 Buy_Now_Price: value,
-                Negotiation_Start_Date: negotiationDate
+                Negotiation_Start_Date: negotiationDate,
             })
         });
         const data = await response.json();

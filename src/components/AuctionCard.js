@@ -54,7 +54,6 @@ export default function AuctionCard(props) {
       const currentBid = parseInt(auction?.Current_Bid);
       const incrementalBid = bid;
       const bidDetails = {user: username, type: "Auction", bid: ( currentBid + incrementalBid ).toString(), time: moment().format("HH:mm:ss"), date: moment().format("YYYY-MM-DD")}
-      //const duration = (JSON.parse(auction.Allow_Auction_Sniping) && minutes < 1) ? parseInt(auction.Total_Bidding_Duration) + parseInt(auction.Incremental_Time) : parseInt(auction.Total_Bidding_Duration);
       const newBid = auction?.Bids;
       newBid.push(bidDetails)
       const response = await fetch(`${process.env.REACT_APP_API}/edit/auction/${auction._id}`, {
@@ -68,7 +67,8 @@ export default function AuctionCard(props) {
                                 });
       const data = await response.json();
       if (data.status === "200") {
-        if (JSON.parse(data?.response?.Allow_Auction_Sniping))
+        console.log()
+        if (JSON.parse(data?.response?.Allow_Auction_Sniping) && minutes === 0 && seconds > 0)
         {
           let newStartingTime = moment(data?.response?.Auction_Start_Date).format("YYYY-MM-DD")+" "+data?.response?.Auction_Start_Time+":00"
           let newEndTime = new Date(newStartingTime).getTime() + 60000 * (parseInt(data?.response.Total_Bidding_Duration || 10) + parseInt(auction?.Incremental_Time)); 
