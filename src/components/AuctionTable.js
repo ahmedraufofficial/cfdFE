@@ -6,13 +6,15 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import Button from '@mui/material/Button';
 import * as React from 'react';
+import CustomModal from './CustomModal';
 
-export default function AuctionTable({rows}) {
+export default function AuctionTable({rows, auctionId}) {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
   
-    
+    const lengthRows = rows?.length - 1
     const columns = [
         { id: 'user', label: 'User'},
         { id: 'type', label: 'Type'},
@@ -45,12 +47,15 @@ export default function AuctionTable({rows}) {
                     {column.label}
                   </TableCell>
                 ))}
+                <TableCell>
+                  Edit
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
+                .map((row, index) => {
                   return (
                     <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                       {columns.map((column) => {
@@ -63,6 +68,15 @@ export default function AuctionTable({rows}) {
                           </TableCell>
                         );
                       })}
+                      <TableCell>
+                        {
+                          index == lengthRows ?                         
+                          <CustomModal rows={rows} auctionId={auctionId} row={row} />
+                          :
+                          <>
+                          </>
+                        }
+                      </TableCell>
                     </TableRow>
                   );
                 })}

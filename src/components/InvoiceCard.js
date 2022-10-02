@@ -19,6 +19,18 @@ export default function InvoiceCard(props) {
       color: theme.palette.text.secondary,
     }));
 
+    const handleInvoice = async (x) => {
+      const response = await fetch(`${process.env.REACT_APP_API}/edit/vehicle/${invoiceData?.Vehicle_Id}`, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          values: {Status: x ? "Accepted" : "Cancelled"}
+        })
+      })
+
+      await response.json();
+    }
+
     return (
       <Card>
         <CardContent>
@@ -55,7 +67,9 @@ export default function InvoiceCard(props) {
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size="small">Generate</Button>
+          <Button variant="contained" color="primary" size="small">Generate</Button>
+          <Button variant="contained" color="success" size="small" onClick={() => handleInvoice(1)}>Accept</Button>
+          <Button variant="contained" color="error" size="small" onClick={() => handleInvoice(0) }>Cancel</Button>
         </CardActions>
       </Card>
     )

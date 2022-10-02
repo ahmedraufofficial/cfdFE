@@ -6,10 +6,8 @@ import { TextField } from 'formik-material-ui';
 import { DatePicker, DesktopTimePicker } from 'formik-mui-lab';
 import moment from "moment";
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { fieldStyle, gridStyle, paperStyle } from '../styles';
-import { confirmAlert } from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const MyRadio = ({ label, ...props }) => {
     const [field] = useField(props);
@@ -47,9 +45,10 @@ const CustomizedSelectForFormik = ({ children, form, field }) => {
     );
 };
 
-function AddAuction(){
+function EditAuction(){    
+    const location = useLocation();
     const navigate = useNavigate();
-
+    const [edit, setEdit] = useState(null)
     const [vehicles, setVehicles] = useState([])
 
     const fetchData = () => {
@@ -62,70 +61,61 @@ function AddAuction(){
           })
       }
 
+    const fetchEditData = (id) => {
+    fetch(`${process.env.REACT_APP_API}/auction/${id}`)
+        .then(response => {
+        return response.json()
+        })
+        .then(data => {
+            setEdit(data.response)
+        })
+    }
+
     useEffect(() => {
+        if (location.pathname.includes("edit")) {
+            fetchEditData(location.pathname.split("/")[3])
+        }
         fetchData()
     }, [])
 
     return (
-        (vehicles.length > 0 ? 
+        (edit ? 
         <Grid>
             <Paper elevation={10} style={paperStyle}>
                 <Formik
-                    initialValues={{Vehicle_Id: "0",
-                                    Stop_Auto_Bidding_Condition: "Never",
-                                    Negotiation_Mode: "automatic",
-                                    Auction_Type: "Reserved",
-                                    Currency: "AED"}}
+                    initialValues={edit}
                     onSubmit={(values, { resetForm }) => {
-                    confirmAlert({
-                        title: 'Confirm to submit',
-                        message: 'Are you sure you want to submit.',
-                        buttons: [
-                            {
-                            label: 'Yes',
-                            onClick: () => {
-                                try {
-                                    async function Add(x) {
-                                        const response = await fetch(`${process.env.REACT_APP_API}/add/auction`, {
-                                            method: 'POST',
-                                            headers: {'Content-Type': 'application/json'},
-                                            body: JSON.stringify({
-                                                x
-                                            })
-                                        })
-                                        const data = await response.json()
-                                        if (data) {
-                                            if (data.status === '200')
-                                            {
-                                                navigate("/auctions", { replace: true });
-                                            } else if (data.status === '500') 
-                                            {
-                                                console.log(data.error)
-                                            }
-                                        }
+                        try {
+                            async function Add(x) {
+                                const response = await fetch(`${process.env.REACT_APP_API}/editadmin/auction/${edit._id}`, {
+                                    method: 'POST',
+                                    headers: {'Content-Type': 'application/json'},
+                                    body: JSON.stringify({
+                                        x
+                                    })
+                                })
+                                const data = await response.json()
+                                if (data) {
+                                    if (data.status === '200')
+                                    {
+                                        navigate("/auctions", { replace: true });
+                                    } else if (data.status === '500') 
+                                    {
+                                        console.log(data.error)
                                     }
-                                    const dataValues = values;    
-                                    let formattedDate = moment().format('LL');
-                                    dataValues.Auction_Start_Date = dataValues.Auction_Start_Date ? moment(dataValues.Auction_Start_Date).format('LL') : formattedDate;
-                                    dataValues.Auction_Start_Time = moment(dataValues.Auction_Start_Time).format("HH:mm");
-                                    Add(dataValues);
-                                    resetForm();
-                                }
-                                catch (err) {
-                                    console.log(err)
                                 }
                             }
-                            },
-                            {
-                            label: 'No',
-                            onClick: () => alert('Re submit')
-                            }
-                        ]
-                        });
+                            const dataValues = values;    
+                            Add(dataValues);
+                            resetForm();
+                        }
+                        catch (err) {
+                            console.log(err)
+                        }
                     }}
                 >
                     <Form>
-                        <Grid><h3>Add Auction</h3></Grid>
+                        <Grid><h3>Edit Auction</h3></Grid>
                         <FormControl style={fieldStyle} margin="normal">
                             <Field name="Vehicle_Id" component={CustomizedSelectForFormik}>
                                 <MenuItem key={0} value="0">Select Vehicle</MenuItem>
@@ -156,8 +146,6 @@ function AddAuction(){
                         <CustomField name="First_Best_Offer" />
                         <CustomField name="Second_Best_Offer" />
                         <CustomField name="Third_Best_Offer" />                        
-                        <Grid style={gridStyle}><Field component={DatePicker} label="Auction Start Date" name="Auction_Start_Date" inputFormat="MM/dd/yyyy" /></Grid>
-                        <Grid style={gridStyle}><Field component={DesktopTimePicker} label="Auction Start Time" name="Auction_Start_Time" /></Grid> 
                         <CustomField name="Total_Bidding_Duration" />
                         <CustomRadioField name="Allow_Auto_Bidding" />
                         <FormLabel>Stop auto bidding condition - </FormLabel>
@@ -194,4 +182,4 @@ function AddAuction(){
     )
 }
 
-export default AddAuction;
+export default EditAuction;

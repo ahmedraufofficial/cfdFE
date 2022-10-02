@@ -4,7 +4,6 @@ import AdminRoutes from './Routes';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
 import { AuthProvider } from './context/AuthProvider';
-import Appbar from './components/Appbar';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
@@ -24,7 +23,6 @@ function App() {
       <AuthProvider>
         <ThemeProvider theme={theme}> 
           <CssBaseline />
-          <Appbar />
           <AdminRoutes /> 
         </ThemeProvider>
       </AuthProvider>

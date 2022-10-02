@@ -17,6 +17,7 @@ import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import AuctionTable from './AuctionTable';
 import Timer from './Timer';
+import { Link } from "react-router-dom";
 
 const images = require.context('../../public/uploads', true);
 
@@ -114,15 +115,17 @@ export default function AuctionCard(props) {
       cursor: "pointer"
     }
 
-    const startingTime = moment(auction?.Auction_Start_Date).format("YYYY-MM-DD")+" "+auction?.Auction_Start_Time+":00"
-
+    const startingTime = moment(auction?.Auction_Start_Date).format("YYYY-MM-DD")+"T"+auction?.Auction_Start_Time+":00"
     const endTime = new Date(startingTime).getTime() + 60000 * parseInt(auction.Total_Bidding_Duration || 10); 
     const [timeLeft, setEndTime] = Timer(endTime, auction);
-  
     const minutes = Math.floor(timeLeft / 60000) % 60;
     const seconds = Math.floor(timeLeft / 1000) % 60;
 
-
+    const linkStyle = {
+      color: "white",
+      textDecoration: "none",
+    }
+  
     return props?.data?
     (
         <Paper
@@ -208,6 +211,9 @@ export default function AuctionCard(props) {
                         <Grid>
                           <Button margin="normal" variant="contained" color="primary" type="submit">Submit</Button>
                         </Grid>
+                        <Grid>
+                          <Link style={linkStyle} underline="none" to={`/auction/edit/${auction?._id}`}><Typography>Edit</Typography></Link>
+                        </Grid>
                       </Form>}
                     </Formik>
                 </Grid>
@@ -230,7 +236,7 @@ export default function AuctionCard(props) {
             <Stack mb={2} direction="row" justifyContent="center">
               <ArrowDropUpIcon style={iconStyle} onClick={() => { setShowTable(0) }} />
             </Stack>
-            <AuctionTable rows={auction?.Bids}/>
+            <AuctionTable rows={auction?.Bids} auctionId={auction?._id}/>
           </> : 
           <></>}
          
