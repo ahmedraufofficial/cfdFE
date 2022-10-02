@@ -3,10 +3,29 @@ import { Field, Form, Formik } from 'formik';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { fieldStyle, gridStyle, paperStyle } from '../styles';
+import ActionAlerts from '../components/Alert';
+
+const CustomizedSelectForFormik = ({ children, form, field }) => {
+    const { name, value } = field;
+    const { setFieldValue } = form;
+
+    return (
+      <Select
+        name={name}
+        value={value}
+        onChange={e => {
+          setFieldValue(name, e.target.value);
+        }}
+      >
+        {children}
+      </Select>
+    );
+};
 
 function AddImages() {
     const [vehicles, setVehicles] = useState([])
     const navigate = useNavigate();
+    const [alert, setAlert] = useState(0)
     const fetchData = () => {
         fetch(`${process.env.REACT_APP_API}/vehicles`)
           .then(response => {
@@ -16,30 +35,14 @@ function AddImages() {
             setVehicles(data.data)
           })
       }
-
+    
     useEffect(() => {
         fetchData()
     }, [])
 
-    const CustomizedSelectForFormik = ({ children, form, field }) => {
-        const { name, value } = field;
-        const { setFieldValue } = form;
-      
-        return (
-          <Select
-            name={name}
-            value={value}
-            onChange={e => {
-              setFieldValue(name, e.target.value);
-            }}
-          >
-            {children}
-          </Select>
-        );
-    };
-
     return (
         <Grid>
+        <ActionAlerts msg={"Succesfully uploaded images"} setAlert={setAlert} alert={alert}/>
         <Paper elevation={10} style={paperStyle}>
             <Formik
                 initialValues={{Vehicle_Id: "0"}}
@@ -51,12 +54,14 @@ function AddImages() {
                         formData.append("id",values.Vehicle_Id);
                         for(let i=0; i < files.files.length; i++) {
                             formData.append("files", files.files[i]);
+                            console.log(files.files[i])
                         }
+                        
                         fetch(`${process.env.REACT_APP_API}/upload_images`, {
                             method: 'POST',
                             body: formData,
                             headers: {}
-                            }).then((res) => console.log(res))
+                            }).then((res) => setAlert(1))
                             .catch((err) => ("Error occured", err));
 
                         resetForm(); 

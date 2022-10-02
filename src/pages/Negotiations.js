@@ -13,8 +13,8 @@ function Negotiations(props) {
         </Grid>
         
             {negotiations.length > 0 && (
-                negotiations.map(negotiation => 
-                    <Stack mt={3}>
+                negotiations.map((negotiation, index) => 
+                    <Stack key={index} mt={3}>
                         <NegotiationCard data={negotiation} key={negotiation._id} />
                     </Stack>
                 ).reverse()

@@ -19,12 +19,15 @@ const pages =  localStorage.getItem('user') ? [
   {name:'Negotiations', url:'/negotiations'},
   {name:'Vehicles', url:'/vehicles'},
   {name:'Invoices', url:'/invoices'},
+  {name:'Accounts', url:'/accounts'},
   {name:'Add Vehicle', url:'/vehicle/add'},
   {name:'Add Auction', url:'/auction/add'},
-  {name:'Add Images', url:'/images/add'},] : [];
+  {name:'Add Images', url:'/images/add'},
+  {name:'Evaluations', url:'/evaluations'},
+] : [];
 const settings = localStorage.getItem('user') ? ['Profile', 'Account', 'Dashboard', 'Logout'] : ['Sign In'];
 
-const Appbar = () => {
+const Appbar = (data) => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -133,7 +136,7 @@ const Appbar = () => {
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 <Link style={linkStyle} underline="none" to={page.url}><Typography textAlign="center">{page.name}</Typography>
-                  {page.name == "Negotiations" ? parseInt(localStorage.getItem("negotiationsCount")) > 0 ? <Box sx={{background: 'red', width: "2em", position: "absolute", marginLeft: "3em"}}>{localStorage.getItem("negotiationsCount")}</Box>: null : null}
+                  {page.name == "Negotiations" ? <Box sx={{background: 'red', width: "2em", position: "absolute", marginLeft: "3em"}}>{data.data}</Box> : null}          
                 </Link>
               </Button>
             ))}
