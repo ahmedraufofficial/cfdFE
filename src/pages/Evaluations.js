@@ -1,12 +1,14 @@
 import { Grid } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { EvaluationBar } from '../components/EvaluationBar';
+import { React, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import EvaluationCard from '../components/EvaluationCard';
 import { paperStyle } from '../styles';
 
 export default function Evaluations() {
-    const [evaluations, setEvaluations] = useState([]);
+    const navigate = useNavigate();
+    const [evaluations, setEvaluations] = useState([])
 
-    const fetchevaluations = () => {
+    const fetchData = () => {
         fetch(`${process.env.REACT_APP_API}/evaluations`)
           .then(response => {
             return response.json()
@@ -14,21 +16,27 @@ export default function Evaluations() {
           .then(data => {
             setEvaluations(data.data)
           })
-    }
+      }
 
-    useEffect(()=>{
-        fetchevaluations();
-    },[])
+    useEffect(() => {
+        fetchData()
+    }, [])
 
+    return (
+        <Grid style={paperStyle}>
+                <Grid>
+                    <h2>Evaluations</h2>
+                </Grid>
+                <Grid container spacing={24}>
+                    {evaluations.length > 0 && (
+                        evaluations.map((evaluation) => (
+                            <Grid item>
+                                <EvaluationCard data={evaluation} key={evaluation._id} />
+                            </Grid>
+                        ))
+                    )}
 
-  return (
-    <Grid style={paperStyle}>
-      Evaluations
-        {evaluations?.length > 0 && (
-            evaluations?.map((evaluation, index) => {
-                return <EvaluationBar key={index} data={evaluation} />
-            })
-        )}
-    </Grid>
-  )
+                </Grid>
+        </Grid>
+    )
 }

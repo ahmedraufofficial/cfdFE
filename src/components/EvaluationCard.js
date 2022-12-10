@@ -74,7 +74,7 @@ export default function VehicleCard(props) {
   return props?.data ?
    (
     <Card sx={{ minWidth: "17em", maxWidth: "20em" }}>
-      <CardMedia
+{/*       <CardMedia
         component="img"
         height="200px"
         width="100%"
@@ -96,55 +96,6 @@ export default function VehicleCard(props) {
         <Button sx={{ my: 2, color: 'white', display: 'block' }}>
                 <Link style={linkStyle} underline="none" to={`/vehicle/edit/${props?.data?._id}`}><Typography textAlign="center">Edit</Typography></Link>
         </Button>
-            <Button onClick={handleOpen}>Download</Button>
-            <Modal
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-            >
-              <Box sx={style}>
-                <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Enter Email <TextField value={email} onChange={handleTextFieldChange} />
-                </Typography>
-                {
-                  email.length > 0 ?  
-               
-                <Button
-                  onClick={(e) => {
-                    fetch(`${process.env.REACT_APP_API}/pdf`, {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify({
-                        filename: `pdf${props?.data?._id}`,
-                        id: props?.data?._id,
-                        email: email
-                      }),
-                    }).then(async res => {
-                      if (res.status === 200) {
-                        try {
-                          handleClose();
-                        } catch (err) {
-                          console.log(err)
-                        }
-      /*                   const blob = await res.blob();
-                        const file = new Blob(
-                          [blob], 
-                          {type: 'application/pdf'}
-                        );
-                        const fileURL = URL.createObjectURL(file);
-                        window.open(fileURL);   */
-                      }
-                    }) 
-                  }}
-                >    
-                  Download
-                </Button> : <></> }
-              </Box>
-            </Modal>
-
       </CardActions>
       <CardActions>
         <Button onClick={()=>{
@@ -170,7 +121,7 @@ export default function VehicleCard(props) {
         handleDelete(props?.data?._id)
       }}>Delete</Button>
       </> : <></>
-      }
+      } */}
     </Card>
   ) :
   (<></>)
