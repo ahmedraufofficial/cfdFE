@@ -1,19 +1,18 @@
 import { Button, Checkbox, FormControl, FormControlLabel, Grid, MenuItem, Paper, Radio, Select, Step, StepLabel, Stepper } from '@mui/material';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
 import { Field, Form, Formik, useField } from 'formik';
 import { TextField } from 'formik-material-ui';
-import { DatePicker, DesktopTimePicker } from 'formik-mui-lab';
-import moment from "moment";
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import * as Yup from 'yup';
 import { checkFields, fieldStyle, gridStyle, Menu, paperStyle } from '../styles';
-import { confirmAlert } from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
+import { DatePicker, DesktopTimePicker } from 'formik-mui-lab';
 
 const CustomizedSelectForFormik = ({ children, form, field }) => {
     const { name, value } = field;
     const { setFieldValue } = form;
-
+    
     return (
     <Select
         name={name}
@@ -39,7 +38,7 @@ const CustomRadioVariableField = (name) => {
     return  <Grid style={gridStyle}>
                 <Grid>{name.name.replaceAll("_"," ")}</Grid>
                 <Grid>
-                    {name.label.map((value, index) => <MyRadio key={index+name.name} name={`${name.group}.${name.name}.Value`} type="radio" value={value} label={value} />)}
+                    {name.label.map((value, index) => <MyRadio key={index} name={`${name.group}.${name.name}.Value`} type="radio" value={value} label={value} />)}
                 </Grid>
                 <Grid>
                     <Field key={`${name.group}.${name.name}`} style={fieldStyle} margin="normal" label="Custom Field" name={`${name.group}.${name.name}.Comment`} component={TextField}></Field>
@@ -51,7 +50,7 @@ const CustomCheckboxField = (name) => {
     return  <Grid style={gridStyle}>
                 <Grid>{name.name.replaceAll("_"," ")}</Grid>
                 <Grid > 
-                    {name.label.map((value, index) => <div style={checkFields}><Field  key={index+name.name} margin="normal" name={`${name.group}.${name.name}.Value`}  type="checkbox" value={value} as={Checkbox} />{value}</div>)}
+                    {name.label.map((value, index) => <div style={checkFields}><Field  key={index} margin="normal" name={`${name.group}.${name.name}.Value`}  type="checkbox" value={value} as={Checkbox} />{value}</div>)}
                 </Grid>
                 <Grid>
                     <Field key={`${name.group}.${name.name}`} style={fieldStyle} margin="normal" label="Custom Field" name={`${name.group}.${name.name}.Comment`} component={TextField}></Field>
@@ -63,13 +62,13 @@ const CustomRadioCheckboxField = (name) => {
     return  <Grid style={gridStyle}>
                 <Grid>{name.name.replaceAll("_"," ")}</Grid>
                 <Grid>
-                    {name.condition.map((value, index) => <MyRadio key={index+name.name} name={`${name.group}.${name.name}.Condition`} type="radio" value={value} label={value} />)}
+                    {name.condition.map((value, index) => <MyRadio key={index} name={`${name.group}.${name.name}.Condition`} type="radio" value={value} label={value} />)}
                 </Grid>
                 <Grid > 
-                    {name.label.map((value, index) => <div style={checkFields}><Field key={index+name.name} name={`${name.group}.${name.name}.Value`}  type="checkbox" value={value} as={Checkbox} />{value}</div>)}
+                    {name.label.map((value, index) => <div style={checkFields}><Field key={index} name={`${name.group}.${name.name}.Value`}  type="checkbox" value={value} as={Checkbox} />{value}</div>)}
                 </Grid>
                 <Grid>
-                    <Field key={`${name.group}.${name.name}rcb`} style={fieldStyle} margin="normal" label="Custom Field" name={`${name.group}.${name.name}.Comment`} component={TextField}></Field>
+                    <Field key={`${name.group}.${name.name}`} style={fieldStyle} margin="normal" label="Custom Field" name={`${name.group}.${name.name}.Comment`} component={TextField}></Field>
                 </Grid>
             </Grid>
 
@@ -77,32 +76,16 @@ const CustomRadioCheckboxField = (name) => {
 
 const MyRadio = ({ label, ...props }) => {
     const [field] = useField(props);
-    return field.value === null ? <FormControlLabel {...field} control={<Radio sx={{color: 'red','&.Mui-checked': {color: 'red',},}}/>} label={label} /> : <FormControlLabel {...field} control={<Radio />} label={label} />;
+    return <FormControlLabel {...field} control={<Radio />} label={label} />;
 };
 
-const bodyVariable = [ "Sticker or Foil", "Faded", "Scratches", "Dents", "Rust", "Hailed"]
+const bodyVariable = ["Original Paint", "Sticker or Foil", "Repainted", "Dented and Painted", "Faded", "Scratches", "Dents", "Rust", "Hailed"]
 
 function AddEvaluation() {
+    const location = useLocation();
     const navigate = useNavigate();
     const [evaluations, setEvaluations] = useState([])
-
-/*     const fetchData = () => {
-        fetch('https://vpic.nhtsa.dot.gov/api/vehicles/getallmakes?format=json')
-          .then(response => {
-            return response.json()
-          })
-          .then(data => {
-            setVehicles(data.Results.slice(0,500))
-          })
-      }
- */
-    function range(start, end) {
-        /* generate a range : [start, start+1, ..., end-1, end] */
-        var len = end - start + 1;
-        var a = new Array(len);
-        for (let i = 0; i < len; i++) a[i] = start + i;
-        return a;
-    }
+    const [edit, setEdit] = useState(null)
 
     const url = 'https://car-data.p.rapidapi.com/cars/makes';
 
@@ -113,86 +96,75 @@ function AddEvaluation() {
         'X-RapidAPI-Host': 'car-data.p.rapidapi.com'
       }
     };
-    
-
+/*     
     const fetchData = () => {
         fetch(url, options)
         .then(res => res.json())
-        .then(json => setEvaluations(json))
+        .then(json => setVehicles(json))
         .catch(err => console.error('error:' + err));
-    }
+    } */
+
+    const fetchEditData = (id) => {
+        fetch(`${process.env.REACT_APP_API}/evaluation/${id}`)
+          .then(response => {
+            return response.json()
+          })
+          .then(data => {
+            setEdit(data.data)
+          })
+      }
 
     useEffect(() => {
-        fetchData()
+        if (location.pathname.includes("edit")) {
+            fetchEditData(location.pathname.split("/")[3])
+        }
+        //fetchData()
     }, [])
 
+    function range(start, end) {
+        /* generate a range : [start, start+1, ..., end-1, end] */
+        var len = end - start + 1;
+        var a = new Array(len);
+        for (let i = 0; i < len; i++) a[i] = start + i;
+        return a;
+    }
+
     return (
+        ( edit ? 
         <Grid>
             <Paper elevation={10} style={paperStyle}>
                 <FormikStepper
-                    initialValues={{
-/*                         Vehicle_Manufacturer: "0",
-                        Manufacturing_Year: new Date().getFullYear().toString(),
-                        Year_Of_Registration: new Date().getFullYear().toString() */
-                    }}
-                    onSubmit={(values, { resetForm }) => {      
-                        confirmAlert({
-                            title: 'Confirm to submit',
-                            message: 'Are you sure you want to submit.',
-                            buttons: [
-                              {
-                                label: 'Yes',
-                                onClick: () => {
-                                    try {
-                                        async function Add(x) {
-                                            const response = await fetch(`${process.env.REACT_APP_API}/add/evaluation`, {
-                                                method: 'POST',
-                                                headers: {'Content-Type': 'application/json'},
-                                                body: JSON.stringify({
-                                                    x
-                                                })
-                                            })
-                                            const data = await response.json()
-                                            if (data) {
-                                                if (data.status === '200')
-                                                {
-                                                    navigate("/evaluations", { replace: true });
-                                                } else if (data.status === '500') 
-                                                {
-                                                    console.log(data.error)
-                                                }
-                                            }
-                                        }
-                                        var dataValues = values;
-/*                                         if (values.Other) {
-                                            dataValues.Vehicle_Manufacturer = values.Other;
-                                            delete dataValues['Other']
-                                        }    
-                                        let formattedDate = moment().format('YYYY');
-                                        dataValues.Year_Of_Registration = dataValues.Year_Of_Registration ? moment(dataValues.Year_Of_Registration).format('YYYY') : formattedDate;   */
-                                        let formattedDate = moment().format('LL');
-                                        dataValues.Appointment_Date = dataValues.Appointment_Date ? moment(dataValues.Appointment_Date).format('LL') : formattedDate;
-                                        dataValues.Time = moment(dataValues.Time).format("HH:mm");
-                                        Add(dataValues);
-                                        resetForm();
-                                    }
-                                    catch (err) {
-                                        console.log(err)
+                    initialValues={edit}
+                    onSubmit={(values) => {                  
+                        try {
+                            async function Edit() {
+                                const response = await fetch(`${process.env.REACT_APP_API}/edit/evaluation/${edit._id}`, {
+                                    method: 'PUT',
+                                    headers: {'Content-Type': 'application/json'},
+                                    body: JSON.stringify({
+                                        values
+                                    })
+                                })
+                                const data = await response.json()
+                                if (data) {
+                                    if (data.status === '200')
+                                    {
+                                        navigate("/evaluations", { replace: true });
+                                    } else if (data.status === '500') 
+                                    {
+                                        console.log(data.error)
                                     }
                                 }
-                              },
-                              {
-                                label: 'No',
-                                onClick: () => alert('Re submit')
-                              }
-                            ]
-                          });
+                            }
+                            Edit();
                         }
-                    }
+                        catch (err) {
+                            console.log(err)
+                        }
+                    }}
                     >
-     
-
-                    <FormikStep key={1} label="General Info"
+                
+                <FormikStep key={1} label="General Info"
                         validationSchema={Yup.object().shape({
                           //Model: Yup.string().required(),
 
@@ -289,12 +261,14 @@ function AddEvaluation() {
  
                     </FormikStep>
 
-
                 </FormikStepper>
             </Paper>
         </Grid>
-
+       :<Box sx={{ display: 'flex',  justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
+            <CircularProgress />
+        </Box> )                                     
     );
+
 }
 
 export function FormikStep({ children }) {
@@ -333,20 +307,16 @@ export function FormikStepper({children, ...props}) {
                 <div style={stepper}>
                     <Stepper style={stepper} activeStep={step} alternativeLabel>
                         {childrenArray.map((child) => (
-                        <Step key={child.props.label+'step'}>
+                        <Step key={child.props.label}>
                             <StepLabel>{child.props.label}</StepLabel>
                         </Step>
                         ))}
                     </Stepper>
                 </div>
-                <div style={btnBox}>
-                <Button variant="contained" color="secondary" type="submit">{isLastStep() ? 'Submit' : 'Next'}</Button>
-                {step > 0 ? <Button margin="normal" variant="contained" color="primary" onClick={() => setStep(s => s-1)}>Prev</Button> : null}
-                </div>
                 {currentChild}
                 <div style={btnBox}>
-                <Button variant="contained" color="secondary" type="submit" onClick={()=>{window.scrollTo({top: 0, left: 0, behavior: 'smooth'});}}>{isLastStep() ? 'Submit' : 'Next'}</Button>
-                {step > 0 ? <Button margin="normal" variant="contained" color="primary" onClick={() => (setStep(s => s-1), window.scrollTo({top: 0, left: 0, behavior: 'smooth'}))}>Prev</Button> : null}
+                {step > 0 ? <Button variant="contained" color="primary" onClick={() => setStep(s => s-1)}>Prev</Button> : null}
+                <Button margin="normal" variant="contained" color="secondary" type="submit">{isLastStep() ? 'Submit' : 'Next'}</Button>
                 </div>
             </Form>
         </Formik>)
