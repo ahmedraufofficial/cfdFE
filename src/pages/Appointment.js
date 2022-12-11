@@ -39,9 +39,6 @@ useEffect(() => {
             <Grid container spacing={3}>
               <Grid item xs={6} md={8} lg={15} style={{fontSize: '25px'}}>
                     Appointments
-                    <Button className='formbutton' variant="outlined" startIcon={<AddCircleOutlineIcon/>} onClick={navigateToForm}>
-                Create New
-              </Button>
               </Grid>
               
               {/* Recent Deposits */}
@@ -49,7 +46,7 @@ useEffect(() => {
               
               </Grid>
               <Grid item xs={12}>
-              {evaluations.length > 0 ? <EvaluationTable rows={evaluations} /> : <></>}
+              {evaluations.length > 0 ? <EvaluationTable rows={evaluations} section={'Appointments'} /> : <></>}
               </Grid>
             </Grid>
           </Container>

@@ -22,7 +22,6 @@ const pages =  localStorage.getItem('user') ? [
   {name:'Vehicles', url:'/vehicles'},
   {name:'Invoices', url:'/invoices'},
   {name:'Accounts', url:'/accounts'},
-  
   {name:'Add Images', url:'/images/add'},
   {name:'Evaluations', url:'/evaluations'},
 ] : [];

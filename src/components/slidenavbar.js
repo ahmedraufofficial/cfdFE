@@ -9,7 +9,7 @@ import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../context/AuthProvider";
 import { Button } from '@mui/material';
-
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 
 const Sidebar = ({children}) => {
     const[isOpen ,setIsOpen] = useState(false);
@@ -26,18 +26,23 @@ const Sidebar = ({children}) => {
             icon:<DashboardIcon />
         },
         {
+            path:"/evaluations",
+            name:"Evaluations",
+            icon:<DirectionsCarIcon />
+        },
+        {
             path:"/appointment",
             name:"Appointment",
             icon:<CalendarMonthIcon />
         },
         {
-            path:"/analytics",
+            path:"/inspections",
             name:"Inspection",
             icon:<FactCheckIcon />
         },
         {
-            path:"/comment",
-            name:"Auction",
+            path:"/Auctions",
+            name:"Auctions",
             icon:<GavelIcon />
         },
     ]

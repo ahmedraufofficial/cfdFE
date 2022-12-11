@@ -43,7 +43,7 @@ export default function Evaluations() {
               
               </Grid>
               <Grid item xs={12}>
-              {evaluations.length > 0 ? <EvaluationTable rows={evaluations} /> : <></>}
+              {evaluations.length > 0 ? <EvaluationTable rows={evaluations} section={'Evaluations'}/> : <></>}
               </Grid>
             </Grid>
         </Container>

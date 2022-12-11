@@ -11,7 +11,7 @@ import * as React from 'react';
 import CustomModal from './CustomModal';
 import { Link } from '@mui/material';
 
-export default function EvaluationTable({rows, auctionId}) {
+export default function EvaluationTable({rows, auctionId, section}) {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     console.log(rows)
@@ -26,7 +26,7 @@ export default function EvaluationTable({rows, auctionId}) {
         { id: 'Location', label: 'Branch'},
         { id: 'User', label: 'Salesman'},
         { id: 'Valuation_Status', label: 'Status'},
-        { id: 'Sell_Option', label: 'Sell Option'},
+        { id: 'Sell_Option', label: 'Option'},
       ];
   
     const handleChangePage = (event, newPage) => {
@@ -37,7 +37,7 @@ export default function EvaluationTable({rows, auctionId}) {
       setRowsPerPage(+event.target.value);
       setPage(0);
     };
-  
+    
     return (
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
         <TableContainer sx={{ maxHeight: 440 }}>
@@ -53,9 +53,9 @@ export default function EvaluationTable({rows, auctionId}) {
                     {column.label}
                   </TableCell>
                 ))}
-                <TableCell>
-                  Edit
-                </TableCell>
+                {
+                  section == 'Evaluations' ? <TableCell>Edit</TableCell> : <></>
+                }
               </TableRow>
             </TableHead>
             <TableBody>
@@ -80,15 +80,23 @@ export default function EvaluationTable({rows, auctionId}) {
                           </TableCell>
                         );
                       })}
-                      <TableCell>
-                        {
-                          index == lengthRows ?                         
-                          <Link href={`/evaluation/edit/${row._id}`}>Link</Link>
-                          :
-                          <>
-                          </>
-                        }
-                      </TableCell>
+
+                      {
+                      section == 'Evaluations' ? <TableCell>{index == lengthRows ? <Link href={`/evaluation/edit/${row._id}`}>Link</Link>:<></>}</TableCell> : <></>
+                      }
+                      {
+                      section == 'Evaluations' ? <TableCell>{index == lengthRows ? <Link href={`/evaluation/edit/${row._id}`}>Appoint</Link>:<></>}</TableCell> : <></>
+                      }
+                      {
+                      section == 'Appointments' ? <TableCell>{index == lengthRows ? <Link href={`/evaluation/edit/${row._id}`}>Inspect</Link>:<></>}</TableCell> : <></>
+                      }
+                      {
+                      section == 'Inspections' ? <TableCell>{index == lengthRows ? <Link href={`/evaluation/edit/${row._id}`}>Auction</Link>:<></>}</TableCell> : <></>
+                      }
+                      {
+                      section == 'Auctions' ? <TableCell>{index == lengthRows ? <Link href={`/evaluation/edit/${row._id}`}>Done</Link>:<></>}</TableCell> : <></>
+                      }
+
                     </TableRow>
                   );
                 })}

@@ -5,10 +5,6 @@ import { RequireAuth } from './components/RequireAuth';
 import AddEvaluation from './pages/AddEvaluation';
 import EditEvaluation from './pages/EditEvaluation'
 import AddAuction from './pages/AddAuction';
-import AddImages from './pages/AddImages';
-import Auctions from './pages/Auctions';
-import Negotiations from './pages/Negotiations';
-import Invoices from './pages/Invoices';
 import { useEffect, useState } from 'react';
 import Appbar from './components/Appbar';
 import EditAuction from './pages/EditAuction';
@@ -16,6 +12,8 @@ import Accounts from './pages/Accounts';
 import Evaluations from './pages/Evaluations';
 import Sidebar from './components/slidenavbar';
 import Appointments from './pages/Appointment';
+import Inspections from './pages/Inspection';
+import Auctions from './pages/Auctions';
 
 
 const AdminRoutes = () => {
@@ -64,14 +62,13 @@ const AdminRoutes = () => {
             <Route exact path='/' element={<Login/>} />
             <Route exact path='/dashboard' element={<RequireAuth><Dashboard/></RequireAuth>} />
             <Route exact path='/appointment' element={<RequireAuth><Appointments/></RequireAuth>} />
+            <Route exact path='/inspections' element={<RequireAuth><Inspections/></RequireAuth>} />
+            <Route exact path='/Auctions' element={<RequireAuth><Auctions/></RequireAuth>} />
             <Route exact path='/evaluation/add' element={<RequireAuth><AddEvaluation/></RequireAuth>} />
             <Route exact path='/evaluation/edit/:id' element={<RequireAuth><EditEvaluation/></RequireAuth>} />
             <Route exact path='/auction/add' element={<RequireAuth><AddAuction/></RequireAuth>} />
             <Route exact path='/auctions' element={<RequireAuth><Auctions auctions={auctions}/></RequireAuth>} />
             <Route exact path='/auction/edit/:id' element={<RequireAuth><EditAuction/></RequireAuth>} />
-            <Route exact path='/negotiations' element={<RequireAuth><Negotiations negotiations={negotiations}/></RequireAuth>} />
-            <Route exact path='/images/add' element={<RequireAuth><AddImages/></RequireAuth>} />
-            <Route exact path='/invoices' element={<RequireAuth><Invoices/></RequireAuth>} />
             <Route exact path='/accounts' element={<RequireAuth><Accounts/></RequireAuth>} />
             <Route exact path='/evaluations' element={<RequireAuth><Evaluations/></RequireAuth>} />
         </Routes>

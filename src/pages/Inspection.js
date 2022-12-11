@@ -9,7 +9,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { useEffect, useState } from 'react';
 import EvaluationTable from '../components/EvaluationTable';
 
-function Auctions() {
+function Inspections() {
     const navigate = useNavigate();
     const navigateToForm = () => {
     navigate('/evaluation/add');
@@ -38,7 +38,7 @@ useEffect(() => {
         <Container maxWidth="lg" sx={{ mt: 3, mb: 3 }}>
             <Grid container spacing={3}>
               <Grid item xs={6} md={8} lg={15} style={{fontSize: '25px'}}>
-                    Auctions
+                    Inspections
               </Grid>
               
               {/* Recent Deposits */}
@@ -46,11 +46,11 @@ useEffect(() => {
               
               </Grid>
               <Grid item xs={12}>
-              {evaluations.length > 0 ? <EvaluationTable rows={evaluations} section={'Auctions'} /> : <></>}
+              {evaluations.length > 0 ? <EvaluationTable rows={evaluations} section={'Inspections'} /> : <></>}
               </Grid>
             </Grid>
           </Container>
     );
   }
 
-  export default Auctions;
+  export default Inspections;
