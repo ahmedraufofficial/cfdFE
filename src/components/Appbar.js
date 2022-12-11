@@ -13,6 +13,8 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from "../context/AuthProvider";
 
 const pages =  localStorage.getItem('user') ? [
   {name:'Auctions', url:'/auctions'},
@@ -20,8 +22,7 @@ const pages =  localStorage.getItem('user') ? [
   {name:'Vehicles', url:'/vehicles'},
   {name:'Invoices', url:'/invoices'},
   {name:'Accounts', url:'/accounts'},
-  {name:'Add Evaluation', url:'/evaluation/add'},
-  {name:'Add Auction', url:'/auction/add'},
+  
   {name:'Add Images', url:'/images/add'},
   {name:'Evaluations', url:'/evaluations'},
 ] : [];
@@ -49,6 +50,12 @@ const Appbar = (data) => {
     color: "white",
     textDecoration: "none",
   }
+  const auth = useAuth()
+    const navigate = useNavigate();
+    
+    const handleLogout = () => {
+        auth.logout()
+    }
 
   return (
     <AppBar position="static">
@@ -164,11 +171,7 @@ const Appbar = (data) => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              <Button onClick={handleLogout}>Log out</Button>
             </Menu>
           </Box>
         </Toolbar>

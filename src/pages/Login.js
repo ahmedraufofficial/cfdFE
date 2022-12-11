@@ -1,5 +1,5 @@
 import LockIcon from '@mui/icons-material/Lock';
-import { Avatar, Button, Grid, Paper, Typography } from '@mui/material';
+import { Avatar, Button, Grid, Paper, Typography, Stack } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
 import { TextField } from "formik-material-ui";
 import { React } from "react";
@@ -7,11 +7,14 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useAuth } from "../context/AuthProvider";
 import { paperStyle } from '../styles';
+import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+
+const lightTheme = createTheme({ palette: { mode: 'light' } });
 
 const Login = () => {
 
     const button = {
-        marginTop: '3em'
+        marginTop: '3em',
     }
     const validationSchema = yup.object({
         username: yup
@@ -76,7 +79,10 @@ const Login = () => {
                         }
                     }}>
                     <Form>
+                        <Stack>
                         <Field margin="normal" name="username" component={TextField} label="Username"/>
+
+                        </Stack>
                         <Field margin="normal" name="password" type="password" component={TextField} label="Password"/>
                         <Button style={button} key="submit" type='submit' variant="contained" color="primary" fullWidth>Sign in</Button>
                     </Form>

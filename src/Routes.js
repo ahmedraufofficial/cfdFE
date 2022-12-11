@@ -14,6 +14,9 @@ import Appbar from './components/Appbar';
 import EditAuction from './pages/EditAuction';
 import Accounts from './pages/Accounts';
 import Evaluations from './pages/Evaluations';
+import Sidebar from './components/slidenavbar';
+import Appointments from './pages/Appointment';
+
 
 const AdminRoutes = () => {
 
@@ -53,10 +56,14 @@ const AdminRoutes = () => {
 
     return (
       <>
-        <Appbar data={negotiationsCount} />
+      
+        <Sidebar>
+        <Appbar/>
+        
         <Routes>
             <Route exact path='/' element={<Login/>} />
             <Route exact path='/dashboard' element={<RequireAuth><Dashboard/></RequireAuth>} />
+            <Route exact path='/appointment' element={<RequireAuth><Appointments/></RequireAuth>} />
             <Route exact path='/evaluation/add' element={<RequireAuth><AddEvaluation/></RequireAuth>} />
             <Route exact path='/vehicle/edit/:id' element={<RequireAuth><EditVehicle/></RequireAuth>} />
             <Route exact path='/auction/add' element={<RequireAuth><AddAuction/></RequireAuth>} />
@@ -68,6 +75,7 @@ const AdminRoutes = () => {
             <Route exact path='/accounts' element={<RequireAuth><Accounts/></RequireAuth>} />
             <Route exact path='/evaluations' element={<RequireAuth><Evaluations/></RequireAuth>} />
         </Routes>
+        </Sidebar>
         </>
     )
 };

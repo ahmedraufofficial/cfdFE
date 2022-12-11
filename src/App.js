@@ -14,7 +14,7 @@ function App() {
       h4: {fontSize: '1.2rem'}
     },
     palette: {
-      mode: "dark"
+      mode: "light"
     },
   });
 
