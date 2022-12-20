@@ -53,7 +53,7 @@ function AddAuction(){
     const [vehicles, setVehicles] = useState([])
 
     const fetchData = () => {
-        fetch(`${process.env.REACT_APP_API}/vehicles`)
+        fetch(`${process.env.REACT_APP_API}/inspections`)
           .then(response => {
             return response.json()
           })
@@ -170,7 +170,7 @@ function AddAuction(){
                                 <MenuItem key="SABC5" value="Third_Best_Offer">Third Best Offer</MenuItem>
                             </Field>
                         </FormControl>
-                        <CustomRadioField name="Allow_Negotiation" />  
+                        {/* <CustomRadioField name="Allow_Negotiation" />  
                         <CustomField name="Negotiation_Duration" />
                         <div style={gridStyle} />  
                         <FormLabel>Negotiation mode - </FormLabel>
@@ -179,7 +179,7 @@ function AddAuction(){
                                 <MenuItem key="NM1" value="automatic">Automatic</MenuItem>
                                 <MenuItem key="NM2" value="manual">Manual</MenuItem>
                             </Field>
-                        </FormControl>
+                        </FormControl> */}
                         <CustomRadioField name="Allow_Auction_Sniping" />    
                         <CustomField name="Incremental_Time" />
                         <CustomField name="Edit_After_Auction" />

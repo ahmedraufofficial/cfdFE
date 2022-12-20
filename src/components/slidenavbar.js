@@ -10,6 +10,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../context/AuthProvider";
 import { Button } from '@mui/material';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
+import ImageIcon from '@mui/icons-material/Image';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
 
 const Sidebar = ({children}) => {
     const[isOpen ,setIsOpen] = useState(false);
@@ -31,8 +33,8 @@ const Sidebar = ({children}) => {
             icon:<DirectionsCarIcon />
         },
         {
-            path:"/appointment",
-            name:"Appointment",
+            path:"/appointments",
+            name:"Appointments",
             icon:<CalendarMonthIcon />
         },
         {
@@ -41,14 +43,24 @@ const Sidebar = ({children}) => {
             icon:<FactCheckIcon />
         },
         {
-            path:"/Auctions",
+            path:"/add/images",
+            name:"Images",
+            icon:<ImageIcon />
+        },
+        {
+            path:"/auctions",
             name:"Auctions",
             icon:<GavelIcon />
         },
+        {
+            path:"/users",
+            name:"Users",
+            icon:<AccountBoxIcon />
+        }
     ]
     return (
         <div className="container">
-           <div style={{width: isOpen ? "200px" : "50px"}} className="sidebar">
+           <div style={{width: isOpen ? "200px" : "50px", borderBottomRightRadius: '50px'}} className="sidebar">
                <div className="top_section">
                    <h1 style={{display: isOpen ? "block" : "none"}} className="logo">Options</h1>
                    <div style={{marginLeft: isOpen ? "50px" : "0px"}} className="bars">

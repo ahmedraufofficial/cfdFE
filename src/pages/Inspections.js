@@ -18,18 +18,23 @@ function Inspections() {
 const [evaluations, setEvaluations] = useState([])
 
 const fetchData = () => {
-    fetch(`${process.env.REACT_APP_API}/evaluations`)
+    fetch(`${process.env.REACT_APP_API}/inspections`)
       .then(response => {
         return response.json()
       })
       .then(data => {
         setEvaluations(data.data)
-        console.log(data.data)
     })
   }
 
 
 useEffect(() => {
+  const roles = localStorage.getItem('roles')
+  if (roles.includes("Admin") || roles.includes("Inspection")) {
+    console.log("Permitted")
+  } else {
+    navigate('/dashboard')
+  }
     fetchData()
 }, [])
 

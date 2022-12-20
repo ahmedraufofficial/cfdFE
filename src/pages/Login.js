@@ -66,7 +66,7 @@ const Login = () => {
                                 })
                                 const data = await response.json()
                                 if (data.user) {
-                                    auth.login(data.user)
+                                    auth.login(data.user, data.roles)
                                     recursiveStorage()
                                 }
                             }

@@ -4,7 +4,7 @@ import { TextField } from 'formik-material-ui';
 import { DatePicker, DesktopTimePicker } from 'formik-mui-lab';
 import moment from "moment";
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import * as Yup from 'yup';
 import { checkFields, fieldStyle, gridStyle, Menu, paperStyle } from '../styles';
 import { confirmAlert } from 'react-confirm-alert';
@@ -35,46 +35,6 @@ const CustomSubField = (name) => {
     return  <Grid><Field key={`${name.group}.${name.name}`} style={fieldStyle} margin="normal" label={name.name.replaceAll("_"," ").split(".")[0]} name={`${name.group}.${name.name}`} component={TextField}></Field></Grid>
 }
 
-const CustomRadioVariableField = (name) => {
-    return  <Grid style={gridStyle}>
-                <Grid>{name.name.replaceAll("_"," ")}</Grid>
-                <Grid>
-                    {name.label.map((value, index) => <MyRadio key={index+name.name} name={`${name.group}.${name.name}.Value`} type="radio" value={value} label={value} />)}
-                </Grid>
-                <Grid>
-                    <Field key={`${name.group}.${name.name}`} style={fieldStyle} margin="normal" label="Custom Field" name={`${name.group}.${name.name}.Comment`} component={TextField}></Field>
-                </Grid>
-            </Grid>
-}
-
-const CustomCheckboxField = (name) => {
-    return  <Grid style={gridStyle}>
-                <Grid>{name.name.replaceAll("_"," ")}</Grid>
-                <Grid > 
-                    {name.label.map((value, index) => <div style={checkFields}><Field  key={index+name.name} margin="normal" name={`${name.group}.${name.name}.Value`}  type="checkbox" value={value} as={Checkbox} />{value}</div>)}
-                </Grid>
-                <Grid>
-                    <Field key={`${name.group}.${name.name}`} style={fieldStyle} margin="normal" label="Custom Field" name={`${name.group}.${name.name}.Comment`} component={TextField}></Field>
-                </Grid>
-            </Grid>
-}
-
-const CustomRadioCheckboxField = (name) => {
-    return  <Grid style={gridStyle}>
-                <Grid>{name.name.replaceAll("_"," ")}</Grid>
-                <Grid>
-                    {name.condition.map((value, index) => <MyRadio key={index+name.name} name={`${name.group}.${name.name}.Condition`} type="radio" value={value} label={value} />)}
-                </Grid>
-                <Grid > 
-                    {name.label.map((value, index) => <div style={checkFields}><Field key={index+name.name} name={`${name.group}.${name.name}.Value`}  type="checkbox" value={value} as={Checkbox} />{value}</div>)}
-                </Grid>
-                <Grid>
-                    <Field key={`${name.group}.${name.name}rcb`} style={fieldStyle} margin="normal" label="Custom Field" name={`${name.group}.${name.name}.Comment`} component={TextField}></Field>
-                </Grid>
-            </Grid>
-
-}
-
 const MyRadio = ({ label, ...props }) => {
     const [field] = useField(props);
     return field.value === null ? <FormControlLabel {...field} control={<Radio sx={{color: 'red','&.Mui-checked': {color: 'red',},}}/>} label={label} /> : <FormControlLabel {...field} control={<Radio />} label={label} />;
@@ -84,7 +44,9 @@ const bodyVariable = [ "Sticker or Foil", "Faded", "Scratches", "Dents", "Rust",
 
 function AddEvaluation() {
     const navigate = useNavigate();
+    const location = useLocation();
     const [evaluations, setEvaluations] = useState([])
+    const [type, setType] = useState(null)
 
 /*     const fetchData = () => {
         fetch('https://vpic.nhtsa.dot.gov/api/vehicles/getallmakes?format=json')
@@ -124,6 +86,7 @@ function AddEvaluation() {
 
     useEffect(() => {
         fetchData()
+        setType(location.pathname.split("/")[1])
     }, [])
 
     return (
@@ -145,7 +108,7 @@ function AddEvaluation() {
                                 onClick: () => {
                                     try {
                                         async function Add(x) {
-                                            const response = await fetch(`${process.env.REACT_APP_API}/add/evaluation`, {
+                                            const response = await fetch(`${process.env.REACT_APP_API}/add/${type}`, {
                                                 method: 'POST',
                                                 headers: {'Content-Type': 'application/json'},
                                                 body: JSON.stringify({
@@ -156,7 +119,7 @@ function AddEvaluation() {
                                             if (data) {
                                                 if (data.status === '200')
                                                 {
-                                                    navigate("/evaluations", { replace: true });
+                                                    navigate(`/${type}s`, { replace: true });
                                                 } else if (data.status === '500') 
                                                 {
                                                     console.log(data.error)
@@ -164,15 +127,11 @@ function AddEvaluation() {
                                             }
                                         }
                                         var dataValues = values;
-/*                                         if (values.Other) {
-                                            dataValues.Vehicle_Manufacturer = values.Other;
-                                            delete dataValues['Other']
-                                        }    
-                                        let formattedDate = moment().format('YYYY');
-                                        dataValues.Year_Of_Registration = dataValues.Year_Of_Registration ? moment(dataValues.Year_Of_Registration).format('YYYY') : formattedDate;   */
-                                        let formattedDate = moment().format('LL');
-                                        dataValues.Appointment_Date = dataValues.Appointment_Date ? moment(dataValues.Appointment_Date).format('LL') : formattedDate;
-                                        dataValues.Time = moment(dataValues.Time).format("HH:mm");
+                                        if (type == 'appointment') {
+                                            let formattedDate = moment().format('LL');
+                                            dataValues.Appointment_Date = dataValues.Appointment_Date ? moment(dataValues.Appointment_Date).format('LL') : formattedDate;
+                                            dataValues.Time = moment(dataValues.Time).format("HH:mm");
+                                        } 
                                         Add(dataValues);
                                         resetForm();
                                     }
@@ -200,48 +159,17 @@ function AddEvaluation() {
                     >
                         <Grid><h3>General Information</h3></Grid>
 
-{/*                         <Grid>
-
-                        <FormControl style={fieldStyle} margin="normal">
-                            <Field key="Vehicle_Manufacturer" style={fieldStyle} margin="normal" name="Vehicle_Manufacturer" component={CustomizedSelectForFormik}>
-                                <MenuItem key="New" value="0">Manufacturer</MenuItem>
-                                    {vehicles.length > 0 && (
-                                        vehicles.map((vehicle, index) => (
-                                            <MenuItem key={index+vehicle} style={Menu} value={vehicle}>{vehicle}</MenuItem>
-                                        ))
-                                    )}  
-                            </Field>
-                            <CustomField name="Other" />
-                        </FormControl>
-                        </Grid>
-
-                        <CustomField name="Model" />
-
-                        <FormControl style={fieldStyle} margin="normal">
-                        <Grid>Manufacturing Year</Grid>
-                            <Field key="Manufacturing_Year" style={fieldStyle} margin="normal" name="Manufacturing_Year" component={CustomizedSelectForFormik}>
-                                <MenuItem key={'MY'} value={new Date().getFullYear().toString()}>{new Date().getFullYear().toString()}</MenuItem>
-                                {range(1970, (new Date().getFullYear() - 1)).map((x)=><MenuItem key={x.toString()+'MY'} value={x.toString()}>{x.toString()}</MenuItem>).reverse()}
-                            </Field>
-                        </FormControl>
-
-                        <FormControl style={fieldStyle} margin="normal">
-                        <Grid>Year Of Registration</Grid>
-                            <Field key="Year_Of_Registration" style={fieldStyle} margin="normal" name="Year_Of_Registration" component={CustomizedSelectForFormik}>
-                                <MenuItem key={'YOR'} value={new Date().getFullYear().toString()}>{new Date().getFullYear().toString()}</MenuItem>
-                                {range(1970, (new Date().getFullYear() - 1)).map((x)=><MenuItem key={x.toString()+'YOR'} value={x.toString()}>{x.toString()}</MenuItem>).reverse()}
-                            </Field>
-                        </FormControl>
- */}
                         <CustomField name="Website" />
 
                         <CustomField name="Location" />
 
                         <CustomField name="User" />
-
-                        <Grid style={gridStyle}><Field component={DatePicker} label="Appointment Date" name=" Appointment_Date" inputFormat="MM/dd/yyyy" /></Grid>
-                        
-                        <Grid style={gridStyle}><Field component={DesktopTimePicker} label="Time" name="Time" /></Grid> 
+                        {
+                            type == 'appointment' ? <>
+                                <Grid style={gridStyle}><Field component={DatePicker} label="Appointment Date" name="Appointment_Date" inputFormat="MM/dd/yyyy" /></Grid>
+                                <Grid style={gridStyle}><Field component={DesktopTimePicker} label="Time" name="Time" /></Grid> 
+                            </>:<></>
+                        }
 
                         <CustomField name="Valuation_Status" />
 

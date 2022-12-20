@@ -9,14 +9,23 @@ import TableRow from '@mui/material/TableRow';
 import Button from '@mui/material/Button';
 import * as React from 'react';
 import CustomModal from './CustomModal';
-import { Link } from '@mui/material';
+import { Link, Grid } from '@mui/material';
 
 export default function EvaluationTable({rows, auctionId, section}) {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    console.log(rows)
     const lengthRows = rows?.length - 1
-    const columns = [
+    const columns = section == 'Evaluations' ? [
+        { id: 'Car_Valuation_Details.Make', label: 'Make'},
+        { id: 'Car_Valuation_Details.Model_Name', label: 'Model'},
+        { id: 'Car_Valuation_Details.Model_Year', label: 'Model_Year'},
+        { id: 'Customer_Information.Contact_Name', label: 'Customer'},
+        { id: 'Location', label: 'Branch'},
+        { id: 'User', label: 'Salesman'},
+        { id: 'Valuation_Status', label: 'Status'},
+        { id: 'Sell_Option', label: 'Option'},
+      ] :
+      section == 'Appointments' ? [
         { id: 'Appointment_Date', label: 'Appointment Date'},
         { id: 'Time', label: 'Time'},
         { id: 'Car_Valuation_Details.Make', label: 'Make'},
@@ -24,6 +33,16 @@ export default function EvaluationTable({rows, auctionId, section}) {
         { id: 'Car_Valuation_Details.Model_Year', label: 'Model_Year'},
         { id: 'Customer_Information.Contact_Name', label: 'Customer'},
         { id: 'Location', label: 'Branch'},
+        { id: 'User', label: 'Salesman'},
+        { id: 'Valuation_Status', label: 'Status'},
+        { id: 'Sell_Option', label: 'Option'},
+      ] : [
+        { id: 'Vehicle_Manufacturer', label: 'Make'},
+        { id: 'Model', label: 'Model'},
+        { id: 'Manufacturing_Year', label: 'Model_Year'},
+        { id: 'Customer_Information.Contact_Name', label: 'Customer'},
+        { id: 'Location', label: 'Branch'},
+        { id: 'Inspector', label: 'Inspector'},
         { id: 'User', label: 'Salesman'},
         { id: 'Valuation_Status', label: 'Status'},
         { id: 'Sell_Option', label: 'Option'},
@@ -53,9 +72,8 @@ export default function EvaluationTable({rows, auctionId, section}) {
                     {column.label}
                   </TableCell>
                 ))}
-                {
-                  section == 'Evaluations' ? <TableCell>Edit</TableCell> : <></>
-                }
+                <TableCell>Edit</TableCell>
+                
               </TableRow>
             </TableHead>
             <TableBody>
@@ -82,16 +100,13 @@ export default function EvaluationTable({rows, auctionId, section}) {
                       })}
 
                       {
-                      section == 'Evaluations' ? <TableCell>{index == lengthRows ? <Link href={`/evaluation/edit/${row._id}`}>Link</Link>:<></>}</TableCell> : <></>
+                      section == 'Evaluations' ? <TableCell><Grid><Link sx={{paddingRight: 2}} href={`/evaluation/edit/${row._id}`}>Edit</Link><Link href={`/appointment/add/${row._id}`}>Appoint</Link></Grid></TableCell> : null
                       }
                       {
-                      section == 'Evaluations' ? <TableCell>{index == lengthRows ? <Link href={`/evaluation/edit/${row._id}`}>Appoint</Link>:<></>}</TableCell> : <></>
+                      section == 'Appointments' ? <TableCell><Grid><Link sx={{paddingRight: 2}} href={`/appointment/edit/${row._id}`}>Edit</Link><Link href={`/inspection/add/${row._id}`}>Inspect</Link></Grid></TableCell> : null
                       }
                       {
-                      section == 'Appointments' ? <TableCell>{index == lengthRows ? <Link href={`/evaluation/edit/${row._id}`}>Inspect</Link>:<></>}</TableCell> : <></>
-                      }
-                      {
-                      section == 'Inspections' ? <TableCell>{index == lengthRows ? <Link href={`/evaluation/edit/${row._id}`}>Auction</Link>:<></>}</TableCell> : <></>
+                      section == 'Inspections' ? <TableCell><Grid><Link sx={{paddingRight: 2}} href={`/inspection/edit/${row._id}`}>Edit</Link><Link href={`/inspection/add/${row._id}`}>Auction</Link></Grid></TableCell> : null
                       }
                       {
                       section == 'Auctions' ? <TableCell>{index == lengthRows ? <Link href={`/evaluation/edit/${row._id}`}>Done</Link>:<></>}</TableCell> : <></>

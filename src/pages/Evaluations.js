@@ -19,13 +19,18 @@ export default function Evaluations() {
           })
           .then(data => {
             setEvaluations(data.data)
-            console.log(data.data)
         })
       }
 
 
     useEffect(() => {
-        fetchData()
+      const roles = localStorage.getItem('roles')
+      if (roles.includes("Admin") || roles.includes("Evaluation")) {
+        console.log("Permitted")
+      } else {
+        navigate('/dashboard')
+      }
+      fetchData()
     }, [])
 
     return (

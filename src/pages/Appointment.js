@@ -12,24 +12,30 @@ import EvaluationTable from '../components/EvaluationTable';
 function Appointments() {
     const navigate = useNavigate();
     const navigateToForm = () => {
-    navigate('/evaluation/add');
+    navigate('/appointment/add');
 };
 
-const [evaluations, setEvaluations] = useState([])
+const [appointments, setAppointments] = useState([])
 
 const fetchData = () => {
-    fetch(`${process.env.REACT_APP_API}/evaluations`)
+    fetch(`${process.env.REACT_APP_API}/appointments`)
       .then(response => {
         return response.json()
       })
       .then(data => {
-        setEvaluations(data.data)
+        setAppointments(data.data)
         console.log(data.data)
     })
   }
 
 
 useEffect(() => {
+  const roles = localStorage.getItem('roles')
+  if (roles.includes("Admin") || roles.includes("Appointment")) {
+    console.log("Permitted")
+  } else {
+    navigate('/dashboard')
+  }
     fetchData()
 }, [])
 
@@ -37,8 +43,11 @@ useEffect(() => {
     return (     
         <Container maxWidth="lg" sx={{ mt: 3, mb: 3 }}>
             <Grid container spacing={3}>
-              <Grid item xs={6} md={8} lg={15} style={{fontSize: '25px'}}>
-                    Appointments
+            <Grid item xs={6} md={8} lg={15} style={{fontSize: '25px'}}>
+                Appointments
+                <Button className='formbutton' variant="outlined" startIcon={<AddCircleOutlineIcon/>} onClick={navigateToForm}>
+                Create New
+              </Button>
               </Grid>
               
               {/* Recent Deposits */}
@@ -46,7 +55,7 @@ useEffect(() => {
               
               </Grid>
               <Grid item xs={12}>
-              {evaluations.length > 0 ? <EvaluationTable rows={evaluations} section={'Appointments'} /> : <></>}
+              {appointments.length > 0 ? <EvaluationTable rows={appointments} section={'Appointments'} /> : <></>}
               </Grid>
             </Grid>
           </Container>

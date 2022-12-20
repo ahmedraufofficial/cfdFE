@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import * as Yup from 'yup';
 import { checkFields, fieldStyle, gridStyle, Menu, paperStyle } from '../styles';
 import { DatePicker, DesktopTimePicker } from 'formik-mui-lab';
+import moment from "moment";
 
 const CustomizedSelectForFormik = ({ children, form, field }) => {
     const { name, value } = field;
@@ -34,46 +35,6 @@ const CustomSubField = (name) => {
     return  <Grid><Field key={`${name.group}.${name.name}`} style={fieldStyle} margin="normal" label={name.name.replaceAll("_"," ").split(".")[0]} name={`${name.group}.${name.name}`} component={TextField}></Field></Grid>
 }
 
-const CustomRadioVariableField = (name) => {
-    return  <Grid style={gridStyle}>
-                <Grid>{name.name.replaceAll("_"," ")}</Grid>
-                <Grid>
-                    {name.label.map((value, index) => <MyRadio key={index} name={`${name.group}.${name.name}.Value`} type="radio" value={value} label={value} />)}
-                </Grid>
-                <Grid>
-                    <Field key={`${name.group}.${name.name}`} style={fieldStyle} margin="normal" label="Custom Field" name={`${name.group}.${name.name}.Comment`} component={TextField}></Field>
-                </Grid>
-            </Grid>
-}
-
-const CustomCheckboxField = (name) => {
-    return  <Grid style={gridStyle}>
-                <Grid>{name.name.replaceAll("_"," ")}</Grid>
-                <Grid > 
-                    {name.label.map((value, index) => <div style={checkFields}><Field  key={index} margin="normal" name={`${name.group}.${name.name}.Value`}  type="checkbox" value={value} as={Checkbox} />{value}</div>)}
-                </Grid>
-                <Grid>
-                    <Field key={`${name.group}.${name.name}`} style={fieldStyle} margin="normal" label="Custom Field" name={`${name.group}.${name.name}.Comment`} component={TextField}></Field>
-                </Grid>
-            </Grid>
-}
-
-const CustomRadioCheckboxField = (name) => {
-    return  <Grid style={gridStyle}>
-                <Grid>{name.name.replaceAll("_"," ")}</Grid>
-                <Grid>
-                    {name.condition.map((value, index) => <MyRadio key={index} name={`${name.group}.${name.name}.Condition`} type="radio" value={value} label={value} />)}
-                </Grid>
-                <Grid > 
-                    {name.label.map((value, index) => <div style={checkFields}><Field key={index} name={`${name.group}.${name.name}.Value`}  type="checkbox" value={value} as={Checkbox} />{value}</div>)}
-                </Grid>
-                <Grid>
-                    <Field key={`${name.group}.${name.name}`} style={fieldStyle} margin="normal" label="Custom Field" name={`${name.group}.${name.name}.Comment`} component={TextField}></Field>
-                </Grid>
-            </Grid>
-
-}
-
 const MyRadio = ({ label, ...props }) => {
     const [field] = useField(props);
     return <FormControlLabel {...field} control={<Radio />} label={label} />;
@@ -86,6 +47,7 @@ function AddEvaluation() {
     const navigate = useNavigate();
     const [evaluations, setEvaluations] = useState([])
     const [edit, setEdit] = useState(null)
+    const [type, setType] = useState(null)
 
     const url = 'https://car-data.p.rapidapi.com/cars/makes';
 
@@ -104,19 +66,28 @@ function AddEvaluation() {
         .catch(err => console.error('error:' + err));
     } */
 
-    const fetchEditData = (id) => {
-        fetch(`${process.env.REACT_APP_API}/evaluation/${id}`)
+    const fetchEditData = (id, type) => {
+        fetch(`${process.env.REACT_APP_API}/${type}/${id}`)
           .then(response => {
             return response.json()
           })
           .then(data => {
-            setEdit(data.data)
+            const x = data.data
+            if (x.Appointment_Date && x.Time) {
+                x.Appointment_Date = moment(x.Appointment_Date).subtract('24:00:00')
+                x.Time = moment("2023-01-03T04:20:00.000Z").subtract('04:00:00')
+            }
+            setEdit(x)
           })
       }
 
     useEffect(() => {
+        setType(location.pathname.split("/")[1])
         if (location.pathname.includes("edit")) {
-            fetchEditData(location.pathname.split("/")[3])
+            fetchEditData(location.pathname.split("/")[3],location.pathname.split("/")[1])
+        }
+        if (location.pathname.includes("add")) {
+            fetchEditData(location.pathname.split("/")[3],"evaluation")
         }
         //fetchData()
     }, [])
@@ -137,26 +108,57 @@ function AddEvaluation() {
                     initialValues={edit}
                     onSubmit={(values) => {                  
                         try {
-                            async function Edit() {
-                                const response = await fetch(`${process.env.REACT_APP_API}/edit/evaluation/${edit._id}`, {
-                                    method: 'PUT',
-                                    headers: {'Content-Type': 'application/json'},
-                                    body: JSON.stringify({
-                                        values
+                            async function Edit(x) {
+                                if (location.pathname.includes("add") && type == "appointment") {
+                                    const response = await fetch(`${process.env.REACT_APP_API}/add/${type}`, {
+                                        method: 'POST',
+                                        headers: {'Content-Type': 'application/json'},
+                                        body: JSON.stringify({
+                                            x
+                                        })
                                     })
-                                })
-                                const data = await response.json()
-                                if (data) {
-                                    if (data.status === '200')
-                                    {
-                                        navigate("/evaluations", { replace: true });
-                                    } else if (data.status === '500') 
-                                    {
-                                        console.log(data.error)
+                                    const data = await response.json()
+                                    if (data) {
+                                        if (data.status === '200')
+                                        {
+                                            await fetch(`${process.env.REACT_APP_API}/evaluation/${location.pathname.split("/")[3]}`, {
+                                                method: 'DELETE',
+                                            })
+                                            navigate(`/${type}s`, { replace: true });
+                                        } else if (data.status === '500') 
+                                        {
+                                            console.log(data.error)
+                                        }
+                                    }
+ 
+                                } else {
+                                    const response = await fetch(`${process.env.REACT_APP_API}/edit/${type}/${edit._id}`, {
+                                        method: 'PUT',
+                                        headers: {'Content-Type': 'application/json'},
+                                        body: JSON.stringify({
+                                            x
+                                        })
+                                    })
+                                    const data = await response.json()
+                                    if (data) {
+                                        if (data.status === '200')
+                                        {
+                                            navigate(`/${type}s`, { replace: true });
+                                        } else if (data.status === '500') 
+                                        {
+                                            console.log(data.error)
+                                        }
                                     }
                                 }
+                                
                             }
-                            Edit();
+                            var dataValues = values;
+                            if (type == 'appointment') {
+                                let formattedDate = moment().format('LL');
+                                dataValues.Appointment_Date = dataValues.Appointment_Date ? moment(dataValues.Appointment_Date).format('LL') : formattedDate;
+                                dataValues.Time = moment(dataValues.Time).format("HH:mm");
+                            } 
+                            Edit(dataValues);
                         }
                         catch (err) {
                             console.log(err)
@@ -211,11 +213,12 @@ function AddEvaluation() {
 
                         <CustomField name="User" />
 
-                        <Grid style={gridStyle}><Field component={DatePicker} label="Appointment Date" name=" Appointment_Date" inputFormat="MM/dd/yyyy" /></Grid>
-                        
-                        <Grid style={gridStyle}><Field component={DesktopTimePicker} label="Time" name="Time" /></Grid> 
-
-                        <CustomField name="Valuation_Status" />
+                        {
+                            type == 'appointment' ? <>
+                                <Grid style={gridStyle}><Field component={DatePicker} label="Appointment Date" name="Appointment_Date" inputFormat="MM/dd/yyyy" /></Grid>
+                                <Grid style={gridStyle}><Field component={DesktopTimePicker} label="Time" name="Time" /></Grid> 
+                            </>:<></>
+                        }
 
                         <CustomField name="Heard_Us_From" />
 

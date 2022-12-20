@@ -76,10 +76,10 @@ const Appbar = (data) => {
               textDecoration: 'none',
             }}
           >
-            CAROLOGY
+            CAR FAIR DEALS ADMIN
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+{/*           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -172,7 +172,7 @@ const Appbar = (data) => {
             >
               <Button onClick={handleLogout}>Log out</Button>
             </Menu>
-          </Box>
+          </Box> */}
         </Toolbar>
       </Container>
     </AppBar>
