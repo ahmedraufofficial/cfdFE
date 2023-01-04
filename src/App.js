@@ -6,6 +6,7 @@ import { CssBaseline } from '@mui/material';
 import { AuthProvider } from './context/AuthProvider';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { deepOrange } from '@mui/material/colors';
 
 function App() {
   const theme = createTheme({
@@ -14,7 +15,10 @@ function App() {
       h4: {fontSize: '1.2rem'}
     },
     palette: {
-      mode: "light"
+      primary: {
+        main: '#ff7043',
+        contrastText: '#fff',
+      }
     },
   });
 

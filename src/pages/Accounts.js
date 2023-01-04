@@ -2,6 +2,7 @@ import { Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { AccountBar } from '../components/AccountBar';
 import { paperStyle } from '../styles';
+import { Container } from '@mui/system';
 
 export default function Accounts() {
     const [accounts, setAccounts] = useState([]);
@@ -22,6 +23,8 @@ export default function Accounts() {
 
 
   return (
+    <Container maxWidth="lg" sx={{ mt: 3, mb: 3 }}>
+    <Grid container spacing={3}>
     <Grid style={paperStyle}>
         {accounts?.length > 0 && (
             accounts?.map((account, index) => {
@@ -29,5 +32,7 @@ export default function Accounts() {
             })
         )}
     </Grid>
+    </Grid>
+    </Container>
   )
 }

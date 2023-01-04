@@ -24,6 +24,7 @@ export default function EvaluationTable({rows, auctionId, section}) {
         { id: 'User', label: 'Salesman'},
         { id: 'Valuation_Status', label: 'Status'},
         { id: 'Sell_Option', label: 'Option'},
+        { id: 'Last_Updated', label: 'Last Updated'},
       ] :
       section == 'Appointments' ? [
         { id: 'Appointment_Date', label: 'Appointment Date'},
@@ -36,6 +37,7 @@ export default function EvaluationTable({rows, auctionId, section}) {
         { id: 'User', label: 'Salesman'},
         { id: 'Valuation_Status', label: 'Status'},
         { id: 'Sell_Option', label: 'Option'},
+        { id: 'Last_Updated', label: 'Last Updated'},
       ] : [
         { id: 'Vehicle_Manufacturer', label: 'Make'},
         { id: 'Model', label: 'Model'},
@@ -46,6 +48,7 @@ export default function EvaluationTable({rows, auctionId, section}) {
         { id: 'User', label: 'Salesman'},
         { id: 'Valuation_Status', label: 'Status'},
         { id: 'Sell_Option', label: 'Option'},
+        { id: 'Last_Updated', label: 'Last Updated'},
       ];
   
     const handleChangePage = (event, newPage) => {

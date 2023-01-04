@@ -80,9 +80,10 @@ function AddEvaluation() {
             setEdit(x)
           })
       }
-
+      const user = localStorage.getItem('user')
     useEffect(() => {
-        setType(location.pathname.split("/")[1])
+        
+         setType(location.pathname.split("/")[1])
         if (location.pathname.includes("edit")) {
             fetchEditData(location.pathname.split("/")[3],location.pathname.split("/")[1])
         }
@@ -140,6 +141,14 @@ function AddEvaluation() {
                                         })
                                     })
                                     const data = await response.json()
+        /*                             const response2 = await fetch(`${process.env.REACT_APP_API}/last_seen/${type}/${edit._id}`, {
+                                        method: 'PUT',
+                                        headers: {'Content-Type': 'application/json'},
+                                        body: JSON.stringify({
+                                            Last_Updated: user
+                                        })
+                                    })
+                                    const data2 = await response2.json() */
                                     if (data) {
                                         if (data.status === '200')
                                         {
@@ -157,7 +166,8 @@ function AddEvaluation() {
                                 let formattedDate = moment().format('LL');
                                 dataValues.Appointment_Date = dataValues.Appointment_Date ? moment(dataValues.Appointment_Date).format('LL') : formattedDate;
                                 dataValues.Time = moment(dataValues.Time).format("HH:mm");
-                            } 
+                            }
+                            dataValues.Last_Updated = user
                             Edit(dataValues);
                         }
                         catch (err) {

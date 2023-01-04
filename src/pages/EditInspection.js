@@ -145,7 +145,7 @@ function EditInspection() {
             setEdit(inspection)
           })
       }
-
+      const user = localStorage.getItem('user')
     useEffect(() => {
         setType(location.pathname.split("/")[1])
         if (location.pathname.includes("edit")) {
@@ -216,7 +216,9 @@ function EditInspection() {
                                     }
                                 }
                             }
-                            Edit(values);
+                            var dataValues = values;
+                            dataValues.Last_Updated = user
+                            Edit(dataValues);
                         }
                         catch (err) {
                             console.log(err)

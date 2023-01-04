@@ -85,6 +85,7 @@ const AdminRoutes = () => {
             <Route exact path='/add/user' element={<RequireAuth><AddUser/></RequireAuth>} />
             <Route exact path='/edit/user/:id' element={<RequireAuth><EditUser/></RequireAuth>} />
             <Route exact path='/users' element={<RequireAuth><Users/></RequireAuth>} />
+            <Route exact path='/accounts' element={<RequireAuth><Accounts/></RequireAuth>} />
         </Routes>
         </Sidebar>
         </>
