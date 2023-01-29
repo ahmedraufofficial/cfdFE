@@ -12,6 +12,8 @@ import { Button } from '@mui/material';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import ImageIcon from '@mui/icons-material/Image';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import WebAssetIcon from '@mui/icons-material/WebAsset';
 
 const Sidebar = ({children}) => {
     const[isOpen ,setIsOpen] = useState(false);
@@ -53,9 +55,20 @@ const Sidebar = ({children}) => {
             icon:<GavelIcon />
         },
         {
+            path:"/listings",
+            name:"Listings",
+            icon:<ListAltIcon />
+        },
+        {
             path:"/users",
             name:"Users",
             icon:<AccountBoxIcon />
+        }
+        ,
+        {
+            path:"/accounts",
+            name:"Web Accounts",
+            icon:<WebAssetIcon />
         }
     ]
     return (

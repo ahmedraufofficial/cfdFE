@@ -39,7 +39,10 @@ const Login = () => {
     }
 
     return (
-        <Grid>
+        <Grid sx={{
+            width: 450,
+            marginLeft: "33%"
+        }}>
             <Paper elevation={10} style={paperStyle}>
             { localStorage.getItem('user') ?  <Navigate to="/dashboard" /> : <></> }
                 <Grid align='center'>
@@ -81,9 +84,8 @@ const Login = () => {
                     <Form>
                         <Stack>
                         <Field margin="normal" name="username" component={TextField} label="Username"/>
-
-                        </Stack>
                         <Field margin="normal" name="password" type="password" component={TextField} label="Password"/>
+                        </Stack>
                         <Button style={button} key="submit" type='submit' variant="contained" color="primary" fullWidth>Sign in</Button>
                     </Form>
                 </Formik>

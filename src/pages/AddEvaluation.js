@@ -1,4 +1,4 @@
-import { Button, Checkbox, FormControl, FormControlLabel, Grid, MenuItem, Paper, Radio, Select, Step, StepLabel, Stepper } from '@mui/material';
+import { Button, Checkbox, FormControl, FormControlLabel, Grid, MenuItem, Paper, Radio, Select, Step, StepLabel, Stepper, FormLabel } from '@mui/material';
 import { Field, Form, Formik, useField } from 'formik';
 import { TextField } from 'formik-material-ui';
 import { DatePicker, DesktopTimePicker } from 'formik-mui-lab';
@@ -40,6 +40,16 @@ const MyRadio = ({ label, ...props }) => {
     return field.value === null ? <FormControlLabel {...field} control={<Radio sx={{color: 'red','&.Mui-checked': {color: 'red',},}}/>} label={label} /> : <FormControlLabel {...field} control={<Radio />} label={label} />;
 };
 
+const CustomRadioVariableField = (name) => {
+    return  <Grid style={gridStyle}>
+                <Grid>{name.name.replaceAll("_"," ")}</Grid>
+                <Grid>
+                    {name.label.map((value, index) => <MyRadio key={index} name={`${name.group}.${name.name}`} type="radio" value={value} label={value} />)}
+                </Grid>
+            </Grid>
+}
+
+
 const bodyVariable = [ "Sticker or Foil", "Faded", "Scratches", "Dents", "Rust", "Hailed"]
 
 function AddEvaluation() {
@@ -76,7 +86,7 @@ function AddEvaluation() {
       }
     };
     
-
+  
     const fetchData = () => {
         fetch(url, options)
         .then(res => res.json())
@@ -84,9 +94,21 @@ function AddEvaluation() {
         .catch(err => console.error('error:' + err));
     }
 
+    const [usernames, setUsernames] = useState([])
+    const fetchUsers = () => {
+        fetch(`${process.env.REACT_APP_API}/usernames`)
+        .then(response => {
+          return response.json()
+        })
+        .then(data => {
+          setUsernames(data.data)
+        })
+      }
+
     useEffect(() => {
         fetchData()
         setType(location.pathname.split("/")[1])
+        fetchUsers()
     }, [])
 
     return (
@@ -97,6 +119,8 @@ function AddEvaluation() {
 /*                         Vehicle_Manufacturer: "0",
                         Manufacturing_Year: new Date().getFullYear().toString(),
                         Year_Of_Registration: new Date().getFullYear().toString() */
+                        User: "",
+                        Car_Valuation_Details: {Booked_by: "", Regional_Specs: ""}
                     }}
                     onSubmit={(values, { resetForm }) => {      
                         confirmAlert({
@@ -133,6 +157,7 @@ function AddEvaluation() {
                                             dataValues.Time = moment(dataValues.Time).format("HH:mm");
                                         } 
                                         Add(dataValues);
+                                        //console.log(dataValues)
                                         resetForm();
                                     }
                                     catch (err) {
@@ -163,7 +188,17 @@ function AddEvaluation() {
 
                         <CustomField name="Location" />
 
-                        <CustomField name="User" />
+                        <FormControl style={fieldStyle} margin="normal">
+                        <FormLabel>User - </FormLabel>
+                            <Field name="User" component={CustomizedSelectForFormik}>
+                                {
+                                    usernames?.map((x, index) => {
+                                        return <MenuItem key={index+"username"} value={x}>{x}</MenuItem>
+                                    })
+                                }
+                            </Field>
+                        </FormControl>
+
                         {
                             type == 'appointment' ? <>
                                 <Grid style={gridStyle}><Field component={DatePicker} label="Appointment Date" name="Appointment_Date" inputFormat="MM/dd/yyyy" /></Grid>
@@ -212,8 +247,19 @@ function AddEvaluation() {
                         <CustomSubField group="Car_Valuation_Details" name="Car_Options" />
                         <CustomSubField group="Car_Valuation_Details" name="Mileage" />
                         <CustomSubField group="Car_Valuation_Details" name="Evaluation_Option" />
-                        <CustomSubField group="Car_Valuation_Details" name="Booked_by" />
-                        
+
+                        <FormControl style={fieldStyle} margin="normal">
+                        <FormLabel>Booked By - </FormLabel>
+                            <Field name="Car_Valuation_Details.Booked_by" component={CustomizedSelectForFormik}>
+                                {
+                                    usernames?.map((x, index) => {
+                                        return <MenuItem key={index+"userbooked"} value={x}>{x}</MenuItem>
+                                    })
+                                }
+                            </Field>
+                        </FormControl>
+
+                        <CustomRadioVariableField group="Car_Valuation_Details" name="Regional_Specs" label={["GCC","European","American","Canadian","Japanese","Korean","Other"]} />
  
                     </FormikStep>
 

@@ -13,7 +13,7 @@ function Appointments() {
     const navigate = useNavigate();
     const navigateToForm = () => {
     navigate('/appointment/add');
-};
+    };
 
 const [appointments, setAppointments] = useState([])
 

@@ -1,4 +1,4 @@
-import { Button, Checkbox, FormControl, FormControlLabel, Grid, MenuItem, Paper, Radio, Select, Step, StepLabel, Stepper } from '@mui/material';
+import { Button, Checkbox, FormControl, FormControlLabel, Grid, MenuItem, Paper, Radio, Select, Step, StepLabel, Stepper, FormLabel } from '@mui/material';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Field, Form, Formik, useField } from 'formik';
@@ -40,6 +40,17 @@ const MyRadio = ({ label, ...props }) => {
     return <FormControlLabel {...field} control={<Radio />} label={label} />;
 };
 
+const CustomRadioVariableField = (name) => {
+    return  <Grid style={gridStyle}>
+                <Grid>{name.name.replaceAll("_"," ")}</Grid>
+                <Grid>
+                    {name.label.map((value, index) => <MyRadio key={index} name={`${name.group}.${name.name}`} type="radio" value={value} label={value} />)}
+                </Grid>
+            </Grid>
+}
+
+
+
 const bodyVariable = ["Original Paint", "Sticker or Foil", "Repainted", "Dented and Painted", "Faded", "Scratches", "Dents", "Rust", "Hailed"]
 
 function AddEvaluation() {
@@ -80,9 +91,25 @@ function AddEvaluation() {
             setEdit(x)
           })
       }
-      const user = localStorage.getItem('user')
+    const user = localStorage.getItem('user')
+
+    const [usernames, setUsernames] = useState([])
+    const fetchUsers = () => {
+        fetch(`${process.env.REACT_APP_API}/usernames`)
+        .then(response => {
+          return response.json()
+        })
+        .then(data => {
+          setUsernames(data.data)
+        })
+      }
+
+
+
+
+
     useEffect(() => {
-        
+        fetchUsers()
          setType(location.pathname.split("/")[1])
         if (location.pathname.includes("edit")) {
             fetchEditData(location.pathname.split("/")[3],location.pathname.split("/")[1])
@@ -184,44 +211,20 @@ function AddEvaluation() {
                     >
                         <Grid><h3>General Information</h3></Grid>
 
-{/*                         <Grid>
-
-                        <FormControl style={fieldStyle} margin="normal">
-                            <Field key="Vehicle_Manufacturer" style={fieldStyle} margin="normal" name="Vehicle_Manufacturer" component={CustomizedSelectForFormik}>
-                                <MenuItem key="New" value="0">Manufacturer</MenuItem>
-                                    {vehicles.length > 0 && (
-                                        vehicles.map((vehicle, index) => (
-                                            <MenuItem key={index+vehicle} style={Menu} value={vehicle}>{vehicle}</MenuItem>
-                                        ))
-                                    )}  
-                            </Field>
-                            <CustomField name="Other" />
-                        </FormControl>
-                        </Grid>
-
-                        <CustomField name="Model" />
-
-                        <FormControl style={fieldStyle} margin="normal">
-                        <Grid>Manufacturing Year</Grid>
-                            <Field key="Manufacturing_Year" style={fieldStyle} margin="normal" name="Manufacturing_Year" component={CustomizedSelectForFormik}>
-                                <MenuItem key={'MY'} value={new Date().getFullYear().toString()}>{new Date().getFullYear().toString()}</MenuItem>
-                                {range(1970, (new Date().getFullYear() - 1)).map((x)=><MenuItem key={x.toString()+'MY'} value={x.toString()}>{x.toString()}</MenuItem>).reverse()}
-                            </Field>
-                        </FormControl>
-
-                        <FormControl style={fieldStyle} margin="normal">
-                        <Grid>Year Of Registration</Grid>
-                            <Field key="Year_Of_Registration" style={fieldStyle} margin="normal" name="Year_Of_Registration" component={CustomizedSelectForFormik}>
-                                <MenuItem key={'YOR'} value={new Date().getFullYear().toString()}>{new Date().getFullYear().toString()}</MenuItem>
-                                {range(1970, (new Date().getFullYear() - 1)).map((x)=><MenuItem key={x.toString()+'YOR'} value={x.toString()}>{x.toString()}</MenuItem>).reverse()}
-                            </Field>
-                        </FormControl>
- */}
                         <CustomField name="Website" />
 
                         <CustomField name="Location" />
 
-                        <CustomField name="User" />
+                        <FormControl style={fieldStyle} margin="normal">
+                        <FormLabel>User - </FormLabel>
+                            <Field name="User" component={CustomizedSelectForFormik}>
+                                {
+                                    usernames?.map((x, index) => {
+                                        return <MenuItem key={index+"username"} value={x}>{x}</MenuItem>
+                                    })
+                                }
+                            </Field>
+                        </FormControl>
 
                         {
                             type == 'appointment' ? <>
@@ -269,15 +272,32 @@ function AddEvaluation() {
                         <CustomSubField group="Car_Valuation_Details" name="Car_Options" />
                         <CustomSubField group="Car_Valuation_Details" name="Mileage" />
                         <CustomSubField group="Car_Valuation_Details" name="Evaluation_Option" />
-                        <CustomSubField group="Car_Valuation_Details" name="Booked_by" />
+                        <FormControl style={fieldStyle} margin="normal">
+                        <FormLabel>Regional Specs - </FormLabel>
+                            <Field name="Car_Valuation_Details.Regional_Specs" component={CustomizedSelectForFormik}>
+                                <MenuItem key={"gcc"} value={"gcc"}>GCC</MenuItem>
+                                <MenuItem key={"american"} value={"american"}>American</MenuItem>
+                            </Field>
+                        </FormControl>
+                        <FormControl style={fieldStyle} margin="normal">
+                        <FormLabel>Booked By - </FormLabel>
+                            <Field name="Car_Valuation_Details.Booked_by" component={CustomizedSelectForFormik}>
+                                {
+                                    usernames?.map((x, index) => {
+                                        return <MenuItem key={index+"userbooked"} value={x}>{x}</MenuItem>
+                                    })
+                                }
+                            </Field>
+                        </FormControl>
                         
+                        <CustomRadioVariableField group="Car_Valuation_Details" name="Regional_Specs" label={["GCC","European","American","Canadian","Japanese","Korean","Other"]} />
  
                     </FormikStep>
 
                 </FormikStepper>
             </Paper>
         </Grid>
-       :<Box sx={{ display: 'flex',  justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
+       :<Box sx={{ display: 'flex',  justifyContent: "center", alignItems: "center", minHeight: "80vh" }}>
             <CircularProgress />
         </Box> )                                     
     );

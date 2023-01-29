@@ -143,6 +143,9 @@ export default function AuctionCard(props) {
                 <Stack direction="row" justifyContent="center">
                   <Typography variant="h4" color="red">Auction Completed</Typography>
                 </Stack>
+                <Button variant="contained">
+                  Delete
+                </Button>
                 <Stack mt={2} direction="row" justifyContent="center">
                   <DoneOutlineIcon />
                 </Stack>

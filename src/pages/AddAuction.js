@@ -188,7 +188,7 @@ function AddAuction(){
                 </Formik>
             </Paper>
         </Grid>
-        :<Box sx={{ display: 'flex',  justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
+        :<Box sx={{ display: 'flex',  justifyContent: "center", alignItems: "center", minHeight: "80vh" }}>
             <CircularProgress />
         </Box> )   
     )

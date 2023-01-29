@@ -60,7 +60,6 @@ const Appbar = (data) => {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <DirectionsCarFilledSharpIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
@@ -76,7 +75,7 @@ const Appbar = (data) => {
               textDecoration: 'none',
             }}
           >
-            CAR FAIR DEALS ADMIN
+            <img src={"/uploads/cfd.png"} width="50%" alt="Logo" />
           </Typography>
 
 {/*           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>

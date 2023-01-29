@@ -19,6 +19,8 @@ import AddImages from './pages/AddImages';
 import AddUser from './pages/AddUser';
 import Users from './pages/Users';
 import EditUser from './pages/EditUser';
+import Listings from './pages/Listings';
+import Inquirys from './pages/Inquirys';
 
 const AdminRoutes = () => {
 
@@ -86,6 +88,8 @@ const AdminRoutes = () => {
             <Route exact path='/edit/user/:id' element={<RequireAuth><EditUser/></RequireAuth>} />
             <Route exact path='/users' element={<RequireAuth><Users/></RequireAuth>} />
             <Route exact path='/accounts' element={<RequireAuth><Accounts/></RequireAuth>} />
+            <Route exact path='/listings' element={<RequireAuth><Listings/></RequireAuth>} />
+            <Route exact path='/inquiries' element={<RequireAuth><Inquirys/></RequireAuth>} />
         </Routes>
         </Sidebar>
         </>

@@ -13,7 +13,7 @@ export default function Dashboard() {
 
 
     return (
-        <Box sx={{ display: 'flex',  justifyContent: "center", alignItems: "center", flexDirection: "column",minHeight: "100vh" }}>
+        <Box sx={{ display: 'flex',  justifyContent: "center", alignItems: "center", flexDirection: "column",minHeight: "80vh" }}>
             <h4>Welcome {localStorage.getItem('user')}</h4>
             <Button variant="contained" color="primary" onClick={handleLogout}>Log out</Button>
         </Box>  

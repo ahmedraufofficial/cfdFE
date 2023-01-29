@@ -1,4 +1,4 @@
-import { Button, Checkbox, FormControl, FormControlLabel, Grid, MenuItem, Paper, Radio, Select, Step, StepLabel, Stepper } from '@mui/material';
+import { Button, Checkbox, FormControl, FormControlLabel, Grid, MenuItem, Paper, Radio, Select, Step, StepLabel, Stepper, FormLabel } from '@mui/material';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Field, Form, Formik, useField } from 'formik';
@@ -104,6 +104,17 @@ function EditInspection() {
         .catch(err => console.error('error:' + err));
     }
 
+    const [usernames, setUsernames] = useState([])
+    const fetchUsers = () => {
+        fetch(`${process.env.REACT_APP_API}/usernames`)
+        .then(response => {
+          return response.json()
+        })
+        .then(data => {
+          setUsernames(data.data)
+        })
+      }
+
     const fetchEditData = (id, type) => {
         fetch(`${process.env.REACT_APP_API}/${type}/${id}`)
           .then(response => {
@@ -131,6 +142,12 @@ function EditInspection() {
                 } catch(err) {
                     console.log(err)
                 }
+                try{
+                    inspection['Vehicle_Information']['Regional_Specs']['Value'] = inspection.Car_Valuation_Details.Regional_Specs
+                    delete inspection.Car_Valuation_Details.Regional_Specs
+                } catch(err) {
+                    console.log(err)
+                }
                 try {
                     delete inspection.Appointment_Date
                     delete inspection.Time
@@ -155,6 +172,7 @@ function EditInspection() {
             fetchEditData(location.pathname.split("/")[3],"appointment")
         }
         fetchData()
+        fetchUsers()
     }, [])
 
     function range(start, end) {
@@ -234,7 +252,16 @@ function EditInspection() {
                     >
                         <Grid><h3>General Information</h3></Grid>
 
-                        <CustomField name="Inspector" />
+                        <FormControl style={fieldStyle} margin="normal">
+                        <FormLabel>Inspector - </FormLabel>
+                            <Field name="Inspector" component={CustomizedSelectForFormik}>
+                                {
+                                    usernames?.map((x, index) => {
+                                        return <MenuItem key={index+"Inspector"} value={x}>{x}</MenuItem>
+                                    })
+                                }
+                            </Field>
+                        </FormControl>
 
                         <Grid>
                         <FormControl style={fieldStyle} margin="normal">
@@ -282,7 +309,16 @@ function EditInspection() {
                         
                         <CustomSubField group="Car_Valuation_Details" name="Evaluation_Option" />
                         
-                        <CustomSubField group="Car_Valuation_Details" name="Booked_by" />
+                        <FormControl style={fieldStyle} margin="normal">
+                        <FormLabel>Booked By - </FormLabel>
+                            <Field name="Car_Valuation_Details.Booked_by" component={CustomizedSelectForFormik}>
+                                {
+                                    usernames?.map((x, index) => {
+                                        return <MenuItem key={index+"userbooked"} value={x}>{x}</MenuItem>
+                                    })
+                                }
+                            </Field>
+                        </FormControl>
             
                     </FormikStep>
                     
@@ -562,14 +598,23 @@ function EditInspection() {
 
                         <CustomField name="Location" />
 
-                        <CustomField name="User" />
+                        <FormControl style={fieldStyle} margin="normal">
+                        <FormLabel>User - </FormLabel>
+                            <Field name="User" component={CustomizedSelectForFormik}>
+                                {
+                                    usernames?.map((x, index) => {
+                                        return <MenuItem key={index+"username"} value={x}>{x}</MenuItem>
+                                    })
+                                }
+                            </Field>
+                        </FormControl>
 
                     </FormikStep>
 
                 </FormikStepper>
             </Paper>
         </Grid>
-       :<Box sx={{ display: 'flex',  justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
+       :<Box sx={{ display: 'flex',  justifyContent: "center", alignItems: "center", minHeight: "80vh" }}>
             <CircularProgress />
         </Box> )                                     
     );
