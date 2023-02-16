@@ -19,14 +19,16 @@ const Inquirys = () => {
     }
 
     useEffect(() => {
-        const roles = localStorage.getItem('roles')
+        
+        getInquirys()
+    }, []);
+
+    const roles = localStorage.getItem('roles')
         if (roles.includes("Admin")) {
           console.log("Permitted")
         } else {
           navigate('/dashboard')
         }
-        getInquirys()
-    }, []);
 
     const navigate = useNavigate();
 

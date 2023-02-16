@@ -88,7 +88,7 @@ const AddUser = () => {
                         <Grid><h3>Add User</h3></Grid>
                         <CustomField name="username" />
                         <CustomField name="password" />
-                        <CustomCheckboxField name="roles" label={["Admin", "Evaluation", "Appointment", "Inspection", "Auction"]} />
+                        <CustomCheckboxField name="roles" label={["Admin", "Evaluation", "Appointment", "Inspection", "Auction", "Listing"]} />
                         <Button style={gridStyle} margin="normal" variant="contained" color="secondary" type="submit">Submit</Button>                              
                     </Form>
                 </Formik>

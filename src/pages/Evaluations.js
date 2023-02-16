@@ -24,14 +24,16 @@ export default function Evaluations() {
 
 
     useEffect(() => {
-      const roles = localStorage.getItem('roles')
-      if (roles.includes("Admin") || roles.includes("Evaluation")) {
-        console.log("Permitted")
-      } else {
-        navigate('/dashboard')
-      }
+      
       fetchData()
     }, [])
+
+    const roles = localStorage.getItem('roles')
+    if (roles.includes("Admin") || roles.includes("Evaluation")) {
+      console.log("Permitted")
+    } else {
+      navigate('/dashboard')
+    }
 
     return (
         <Container maxWidth="lg" sx={{ mt: 3, mb: 3 }}>

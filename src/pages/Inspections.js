@@ -29,15 +29,16 @@ const fetchData = () => {
 
 
 useEffect(() => {
-  const roles = localStorage.getItem('roles')
+  
+    fetchData()
+}, [])
+
+const roles = localStorage.getItem('roles')
   if (roles.includes("Admin") || roles.includes("Inspection")) {
     console.log("Permitted")
   } else {
     navigate('/dashboard')
   }
-    fetchData()
-}, [])
-
 
     return (     
         <Container maxWidth="lg" sx={{ mt: 3, mb: 3 }}>

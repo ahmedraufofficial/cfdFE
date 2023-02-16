@@ -110,7 +110,7 @@ const EditUser = () => {
                         <Grid><h3>Edit User</h3></Grid>
                         <CustomField name="username" />
                         <CustomField name="password" />
-                        <CustomCheckboxField name="roles" label={["Admin", "Evaluation", "Appointment", "Inspection", "Auction"]} />
+                        <CustomCheckboxField name="roles" label={["Admin", "Evaluation", "Appointment", "Inspection", "Auction", "Listing"]} />
                         <Button style={gridStyle} margin="normal" variant="contained" color="secondary" type="submit">Submit</Button>                              
                     </Form>
                 </Formik>

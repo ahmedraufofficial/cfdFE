@@ -18,12 +18,6 @@ const Listings = () => {
     }
 
     useEffect(() => {
-        const roles = localStorage.getItem('roles')
-        if (roles.includes("Admin")) {
-          console.log("Permitted")
-        } else {
-          navigate('/dashboard')
-        }
         getListings()
     }, []);
 
@@ -33,11 +27,18 @@ const Listings = () => {
       navigate('/inquiries');
       };
 
+      const roles = localStorage.getItem('roles')
+        if (roles.includes("Admin") || roles.includes("Listing")) {
+          console.log("Permitted")
+        } else {
+          navigate('/dashboard')
+        }
+
   return (
     <Container maxWidth="lg" sx={{ mt: 3, mb: 3 }}>
             <Grid container spacing={3}>
               <Grid item xs={6} md={8} lg={15} style={{fontSize: '25px'}}>
-                    Listings
+                    Listings 
                     <Button className='formbutton' variant="outlined" onClick={navigateToForm}>
                 Inquiries
               </Button>

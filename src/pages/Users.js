@@ -19,12 +19,7 @@ const Users = () => {
     }
 
     useEffect(() => {
-        const roles = localStorage.getItem('roles')
-        if (roles.includes("Admin")) {
-          console.log("Permitted")
-        } else {
-          navigate('/dashboard')
-        }
+    
         getUsers()
     }, []);
 
@@ -32,6 +27,15 @@ const Users = () => {
     const addUser = () => {
         navigate('/add/user');
     };
+
+    const roles = localStorage.getItem('roles')
+    if (roles.includes("Admin")) {
+      console.log("Permitted")
+    } else {
+      navigate('/dashboard')
+    }
+
+
 
   return (
     <Container maxWidth="lg" sx={{ mt: 3, mb: 3 }}>

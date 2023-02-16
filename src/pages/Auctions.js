@@ -21,12 +21,6 @@ function Auctions(props) {
 }
 
   useEffect(()=>{
-    const roles = localStorage.getItem('roles')
-    if (roles.includes("Admin") || roles.includes("Auction")) {
-      console.log("Permitted")
-    } else {
-      navigate('/dashboard')
-    }
       const auctionInterval = setInterval(fetchAuctions, 4000) 
       return () => {
         clearInterval(auctionInterval);
@@ -37,6 +31,14 @@ function Auctions(props) {
   const navigateToForm = () => {
     navigate('/auction/add');
   };
+
+  const roles = localStorage.getItem('roles')
+  if (roles.includes("Admin") || roles.includes("Auction")) {
+    console.log("Permitted")
+  } else {
+    navigate('/dashboard')
+  }
+  
     return (     
         <Container maxWidth="lg" sx={{ mt: 3, mb: 3 }}>
             <Grid container spacing={3}>
